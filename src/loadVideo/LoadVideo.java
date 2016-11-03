@@ -16,8 +16,8 @@ import org.opencv.highgui.VideoCapture;
 
 public class LoadVideo {
 	private int width_;
-	int height_;
-	ArrayList<Mat> frames_ = new ArrayList<Mat>();
+	private int height_;
+	private ArrayList<Mat> frames_ = new ArrayList<Mat>();
 
 	// http://stackoverflow.com/questions/17401852/open-video-file-with-opencv-java
 	public LoadVideo(VideoCapture cap) {
@@ -66,6 +66,10 @@ public class LoadVideo {
 		return width_;
 	}
 
+	public int getSize() {
+		return frames_.size();
+	}
+
 	// Affiche une image de la vidéo dans une nouvelle fenêtre
 	public void displayFrame(int numFrame) {
 		// Highgui.imwrite(imgStr,m);
@@ -98,10 +102,10 @@ public class LoadVideo {
 			type = BufferedImage.TYPE_BYTE_GRAY;
 		else
 			type = BufferedImage.TYPE_3BYTE_BGR;
-
 		out = new BufferedImage(width, height, type);
 
 		out.getRaster().setDataElements(0, 0, width, height, data);
 		return out;
+
 	}
 }

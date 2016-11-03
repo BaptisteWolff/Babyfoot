@@ -102,12 +102,13 @@ public class Fenetre extends JFrame implements ActionListener {
 			System.out.println("Success");
 			LoadVideo video = new LoadVideo(cap);
 			System.out.println("ok");
-			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight()));
-			Image img =Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight());
+			Image img = Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight());
 			System.out.println("ok2");
 			JPanel pan = new Panneau(img);
 			// On prévient notre JFrame que notre JPanel sera son content pane
+			this.setVisible(false);
 			this.setContentPane(pan);
+			this.setVisible(true);
 			this.validate();
 		} else {
 			System.out.println("Failure");
@@ -115,7 +116,6 @@ public class Fenetre extends JFrame implements ActionListener {
 		}
 		// Instanciation d'un objet JPanel
 
-		
 	}
 
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
