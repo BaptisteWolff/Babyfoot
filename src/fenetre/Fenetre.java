@@ -30,23 +30,23 @@ public class Fenetre extends JFrame implements ActionListener {
 
 	public Fenetre() {
 
-		// On prend la résolution de l'écran
+		// On prend la rÃ©solution de l'Ã©cran
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int) screenSize.getWidth();
 		int height = (int) screenSize.getHeight();
 
-		// Définit un titre pour notre fenêtre
+		// DÃ©finit un titre pour notre fenÃªtre
 		this.setTitle("Baby-Foot");
-		// Définit sa taille : 400 pixels de large et 100 pixels de haut
-
-		// fenetre.setBackground(Color.GRAY);
-		// this.setSize(width, height); // Fenetre qui prend tout l'écran
-		// Nous demandons maintenant à notre objet de se positionner au centre
+		// Taille par dÃ©faut lorsqu'on est pas en plein Ã©cran
+		this.setSize(width*2/3, height*2/3);
+		// Positionne notre objet au centre
 		this.setLocationRelativeTo(null);
 		// Termine le processus lorsqu'on clique sur la croix rouge
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Plein ecran
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		// Bouton play non disponible au dÃ©but
+	    	bPlay.setEnabled(false);
 
 		bOpen.addActionListener(this);
 		// Affichage des boutons:
@@ -54,7 +54,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		// Bouton ouvrir
 		// On ajoute le bouton au content pane de la JFrame
 
-		// On définit le layout à utiliser sur le content pane
+		// On dÃ©finit le layout Ã  utiliser sur le content pane
 		GridLayout g1 = new GridLayout();
 		g1.setColumns(10);
 		g1.setRows(10);
@@ -71,7 +71,7 @@ public class Fenetre extends JFrame implements ActionListener {
 	}
 
 	private void go() {
-		// Cette méthode ne change pas
+		// Cette mÃ©thode ne change pas
 	}
 	/*
 	 * public void mousePressed(MouseEvent event) { //Nous changeons le fond de
@@ -102,13 +102,12 @@ public class Fenetre extends JFrame implements ActionListener {
 			System.out.println("Success");
 			LoadVideo video = new LoadVideo(cap);
 			System.out.println("ok");
-			Image img = Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight());
+			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight()));
+			Image img =Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight());
 			System.out.println("ok2");
 			JPanel pan = new Panneau(img);
-			// On prévient notre JFrame que notre JPanel sera son content pane
-			this.setVisible(false);
+			// On prÃ©vient notre JFrame que notre JPanel sera son content pane
 			this.setContentPane(pan);
-			this.setVisible(true);
 			this.validate();
 		} else {
 			System.out.println("Failure");
@@ -116,6 +115,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		}
 		// Instanciation d'un objet JPanel
 
+		
 	}
 
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
