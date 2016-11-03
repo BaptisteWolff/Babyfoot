@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
+import org.opencv.imgproc.Imgproc;
 
 public class LoadVideo {
 	private int width_;
@@ -94,14 +95,17 @@ public class LoadVideo {
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
 	public static BufferedImage Mat2bufferedImage(Mat in, int width, int height) {
 		BufferedImage out;
-		byte[] data = new byte[width * height * (int) in.elemSize()];
+		Mat in2 = new Mat();
+		Imgproc.cvtColor(in, in2, Imgproc.COLOR_RGB2BGR);
+		byte[] data = new byte[width * height * (int) in2.elemSize()];
 		int type;
-		in.get(0, 0, data);
+		in2.get(0, 0, data);
 
-		if (in.channels() == 1)
+		if (in2.channels() == 1)
 			type = BufferedImage.TYPE_BYTE_GRAY;
 		else
 			type = BufferedImage.TYPE_3BYTE_BGR;
+		
 		out = new BufferedImage(width, height, type);
 
 		out.getRaster().setDataElements(0, 0, width, height, data);
