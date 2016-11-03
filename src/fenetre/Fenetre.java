@@ -90,6 +90,7 @@ public class Fenetre extends JFrame implements ActionListener {
 			String replacedStr = str.replace('\\', '/');
 			System.out.println(replacedStr);
 			afficherImage(str);
+			bPlay.setEnabled(true);
 		}
 
 	}
