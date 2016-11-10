@@ -47,7 +47,6 @@ public class LoadVideo {
 
 		int framesPerSecond = 60;
 		int skipTicks = 1000 / framesPerSecond;
-		int maxFramesSkip = 5;
 
 		double nextFrameTick = System.currentTimeMillis();
 		int loops;
