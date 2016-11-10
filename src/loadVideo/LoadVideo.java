@@ -3,9 +3,6 @@ package loadVideo;
 import java.util.ArrayList;
 
 import java.awt.image.BufferedImage;
-import java.util.Vector;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,8 +22,7 @@ public class LoadVideo {
 		width_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
 		height_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
 		int i = 0;
-		while (i < (int) cap
-				.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
+		while (i < (int) cap.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
 			Mat frame = new Mat();
 			cap.read(frame);
 			frames_.add(frame);
@@ -50,6 +46,7 @@ public class LoadVideo {
 			vidpanel.setIcon(image);
 			vidpanel.repaint();
 			i++;
+
 		}
 		System.out.println("end");
 	}
@@ -105,7 +102,7 @@ public class LoadVideo {
 			type = BufferedImage.TYPE_BYTE_GRAY;
 		else
 			type = BufferedImage.TYPE_3BYTE_BGR;
-		
+
 		out = new BufferedImage(width, height, type);
 
 		out.getRaster().setDataElements(0, 0, width, height, data);
