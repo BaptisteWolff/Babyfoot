@@ -22,7 +22,8 @@ public class LoadVideo {
 		width_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
 		height_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
 		int i = 0;
-		while (i < (int) cap.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
+		while (i < (int) cap
+				.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
 			Mat frame = new Mat();
 			cap.read(frame);
 			frames_.add(frame);
@@ -32,7 +33,10 @@ public class LoadVideo {
 	}
 
 	// Affiche la vidéo dans une nouvelle fenêtre
-	public void displayVideo() {
+	// Sources pour afficher la vidéo à un raffraichissement donné :
+	// http://stackoverflow.com/questions/771206/how-do-i-cap-my-framerate-at-60-fps-in-java
+	public void displayVideo(){
+		int framesPerSecond = 60;
 		JFrame jframe = new JFrame("video");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel vidpanel = new JLabel();
@@ -41,12 +45,21 @@ public class LoadVideo {
 		jframe.setVisible(true);
 		ImageIcon image = new ImageIcon();
 		int i = 0;
+		double videoTick = System.currentTimeMillis();
+		double nextVideoTick=0;
 		while (i < frames_.size()) {
 			image = new ImageIcon(Mat2bufferedImage(frames_.get(i), width_, height_));
 			vidpanel.setIcon(image);
 			vidpanel.repaint();
 			i++;
-
+			try {
+				nextVideoTick=System.currentTimeMillis();
+				Thread.sleep((long) ((1000-(nextVideoTick-videoTick)) / (framesPerSecond)));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			videoTick = System.currentTimeMillis();
 		}
 		System.out.println("end");
 	}
