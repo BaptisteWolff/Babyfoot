@@ -11,7 +11,7 @@ public class LoadVideoTest {
 		if (cap.isOpened()) {
 			System.out.println("Success");
 			LoadVideo video = new LoadVideo(cap);
-			video.displayVideo();
+			video.displayVideo(60);
 			video.displayFrame(250);
 		} else {
 			System.out.println("Failure");
