@@ -103,8 +103,8 @@ public class Fenetre extends JFrame implements ActionListener {
 			System.out.println("Success");
 			LoadVideo video = new LoadVideo(cap);
 			System.out.println("ok");
-			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight()));
-			Image img =Mat2bufferedImage(video.getFrame(20), video.getWidht(), video.getHeight());
+			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(20), video.getWidth(), video.getHeight()));
+			Image img =Mat2bufferedImage(video.getFrame(20), video.getWidth(), video.getHeight());
 			System.out.println("ok2");
 			JPanel pan = new Panneau(img);
 			// On prévient notre JFrame que notre JPanel sera son content pane

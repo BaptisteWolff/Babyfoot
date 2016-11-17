@@ -31,7 +31,9 @@ public class SegmentationTest {
 		}
 		tpsSys = System.currentTimeMillis() - tpsSys;
 		System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys +" ms");
-		videoSeg.displayVideo(5);
+		videoSeg.displayVideo(1);
+		//Mat frame=video.getFrame(180);
+		//Segmentation test2=new Segmentation(frame);
 
 	}
 }
