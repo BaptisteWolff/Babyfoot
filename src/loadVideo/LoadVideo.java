@@ -45,7 +45,7 @@ public class LoadVideo {
 	// Affiche la vidéo dans une nouvelle fenêtre
 	// Sources pour afficher la vidéo à un raffraichissement donné :
 	// http://stackoverflow.com/questions/771206/how-do-i-cap-my-framerate-at-60-fps-in-java
-	public void displayVideo(int framesPerSecond) {
+	public void displayVideo(int framesPerSecond,int startFrame) {
 		JFrame jframe = new JFrame("video");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel vidpanel = new JLabel();
@@ -53,7 +53,7 @@ public class LoadVideo {
 		jframe.setSize(width_ + 10, height_ + 35);
 		jframe.setVisible(true);
 		ImageIcon image = new ImageIcon();
-		int i = 0;
+		int i = startFrame;
 
 		int skipTicks = 1000 / framesPerSecond;
 
