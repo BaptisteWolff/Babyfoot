@@ -40,12 +40,10 @@ public class LoadVideo {
 		this.height_ = height;
 	}
 
-
-
 	// Affiche la vidéo dans une nouvelle fenêtre
 	// Sources pour afficher la vidéo à un raffraichissement donné :
 	// http://stackoverflow.com/questions/771206/how-do-i-cap-my-framerate-at-60-fps-in-java
-	public void displayVideo(int framesPerSecond,int startFrame) {
+	public void displayVideo(int framesPerSecond, int startFrame) {
 		JFrame jframe = new JFrame("video");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel vidpanel = new JLabel();
@@ -63,12 +61,72 @@ public class LoadVideo {
 		while (i < frames_.size()) {
 			loops = 0;
 			image = new ImageIcon(Mat2bufferedImage(frames_.get(i), width_, height_));
-			while (System.currentTimeMillis() < nextFrameTick + skipTicks && loops < 10000000) {
-	            loops++;
+			while (System.currentTimeMillis() < nextFrameTick + skipTicks && loops < 1000000000) {
+				loops++;
 			}
 			nextFrameTick = System.currentTimeMillis();
 			vidpanel.setIcon(image);
-			//vidpanel.repaint();
+			// vidpanel.repaint();
+			i++;
+		}
+		System.out.println("end");
+	}
+
+	// Affiche une vidéo avec les barycentres
+	public void displayVideoBarycentres(int framesPerSecond, int startFrame, int barycentres[][]) {
+		JFrame jframe = new JFrame("video");
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JLabel vidpanel = new JLabel();
+		jframe.setContentPane(vidpanel);
+		jframe.setSize(width_ + 10, height_ + 35);
+		jframe.setVisible(true);
+		ImageIcon image = new ImageIcon();
+		int i = startFrame;
+
+		int X[] = barycentres[0];
+		int Y[] = barycentres[1];
+		int x = 0;
+		int y = 0;
+
+		int skipTicks = 1000 / framesPerSecond;
+
+		double nextFrameTick = System.currentTimeMillis();
+		int loops;
+		Mat frame = new Mat();
+
+		double[] data = frames_.get(0).get(0, 0);
+		data[0] = 0;
+		data[1] = 0;
+		data[2] = 255;
+
+		while (i < frames_.size()) {
+			loops = 0;
+			frame = frames_.get(i);
+			x = X[i];
+			y = Y[i];
+
+			// Tracer une croix représentant le barycentre
+			for (int j = 0; j < 20; j++) {
+
+				if (j + y - 10 <= height_ && y + j - 10 >= 0) {
+					frame.put(y + j - 10, x, data);
+				}
+			}
+			for (int j = 0; j < 20; j++) {
+				if (j + x - 10 <= width_ && x + j - 10 >= 0) {
+					frame.put(y, x + j - 10, data);
+				}
+			}
+
+			image = new ImageIcon(Mat2bufferedImage(frame, width_, height_));
+
+			while (System.currentTimeMillis() < nextFrameTick + skipTicks && loops < 1000000000) {
+				loops++;
+			}
+			nextFrameTick = System.currentTimeMillis();
+
+			vidpanel.setIcon(image);
+			// vidpanel.repaint();
 			i++;
 		}
 		System.out.println("end");
@@ -90,8 +148,8 @@ public class LoadVideo {
 	public int getSize() {
 		return frames_.size();
 	}
-	
-	public void addFrame(Mat frame){
+
+	public void addFrame(Mat frame) {
 		frames_.add(frame);
 	}
 

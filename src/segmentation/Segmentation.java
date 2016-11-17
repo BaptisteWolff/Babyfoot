@@ -10,15 +10,11 @@ import org.opencv.imgproc.Imgproc;
 import static java.lang.Math.*;
 
 public class Segmentation {
-	private Mat frameOut_;
 	private int x_ = 0, y_ = 0;
 
 	public Segmentation(Mat frame, double h, double s, double v) {
 
 		Mat hsvImage = new Mat();
-		Mat frameOut = new Mat();
-
-		frame.copyTo(frameOut);
 
 		// convert the frame to HSV
 		Imgproc.cvtColor(frame, hsvImage, Imgproc.COLOR_RGB2BGR);
@@ -39,13 +35,6 @@ public class Segmentation {
 						&& (hsvImage.get(y, x)[2] > max(0, v - 70)) && (hsvImage.get(y, x)[2] < min(255, v + 80))) {
 					sommeX += x;
 					sommeY += y;
-					nbPixels++;
-					// Remplace les pixels détectés par des pixels verts
-					double[] data = frameOut.get(y, x);
-					data[0] = 0;
-					data[1] = 255;
-					data[2] = 0;
-					frameOut.put(y, x, data);
 				}
 			}
 		}
@@ -61,47 +50,15 @@ public class Segmentation {
 		x_ = X;
 		y_ = Y;
 
-		// Tracer une croix représentant le barycentre
-
-		for (int i = 0; i < 20; i++) {
-			if (i + Y - 10 <= height && Y + i - 10 >= 0) {
-				double[] data = frameOut.get(Y + i - 10, X);
-				data[0] = 0;
-				data[1] = 0;
-				data[2] = 255;
-				frameOut.put(Y + i - 10, X, data);
-			}
-		}
-
-		for (int i = 0; i < 20; i++) {
-			if (i + X - 10 <= width && X + i - 10 >= 0) {
-				double[] data = frameOut.get(Y, X + i - 10);
-				data[0] = 0;
-				data[1] = 0;
-				data[2] = 255;
-				frameOut.put(Y, X + i - 10, data);
-			}
-		}
-
 		// ***** Test ********
 
 		// double[] data2 = hsvImage.get(Y, X);
 		// System.out.println(""+data2[0]+" "+data2[1]+" "+data2[2]);
 
-		//System.out.println("x = " + X + "; y = " + Y);
+		// System.out.println("x = " + X + "; y = " + Y);
 
-		// Highgui.imwrite("D:/Users/Baptiste/Pictures/BigMaccadam/blurredImage.jpg",
-		// blurredImage);
 		// Highgui.imwrite("D:/Users/Baptiste/Pictures/BigMaccadam/hsvImage.jpg",
 		// hsvImage);
-		// Highgui.imwrite("D:/Users/Baptiste/Pictures/BigMaccadam/frameOut.jpg",
-		// frameOut);
-
-		frameOut_ = frameOut;
-	}
-
-	public Mat getFrameOut_() {
-		return frameOut_;
 	}
 
 	public int getX_() {
