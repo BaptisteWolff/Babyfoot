@@ -22,8 +22,7 @@ public class LoadVideo {
 		width_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
 		height_ = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
 		int i = 0;
-		while (i < (int) cap
-				.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
+		while (i < (int) cap.get(7)) /* cap.get(7) retourne le nombre de frames de cap */ {
 			Mat frame = new Mat();
 			cap.read(frame);
 			frames_.add(frame);

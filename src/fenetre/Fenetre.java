@@ -24,6 +24,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
 import loadVideo.LoadVideo;
 
 public class Fenetre{
@@ -36,8 +38,8 @@ public class Fenetre{
 	JButton bPause = new JButton("Pause");
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
-	TextField tChemin = new TextField("Chemin");
-	TextField txtNum = new TextField();
+	JTextField tChemin = new JTextField("Chemin");
+	JTextField txtNum = new JTextField();
 	JRadioButton plusmoins= new JRadioButton("Plus 1 moins 1");
 	JRadioButton plus= new JRadioButton("Plus 1");
 	JRadioButton moins= new JRadioButton("Moins 1");
@@ -51,7 +53,8 @@ public class Fenetre{
 
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);// Plein ecran
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le processus lorsqu'on clique sur la croix rouge
-
+		
+		
 		JPanel panelPrincipal = new JPanel();
 		JPanel panelGauche = new JPanel();
 		JPanel panelDroit = new JPanel();
@@ -95,11 +98,15 @@ public class Fenetre{
 		panelLecture.add(bPlay);
 		panelLecture.add(bPause);		
 		panelLecture.add(bSuivant);
-		// Bouton play non disponible au dÃ©but
+		// Boutons play non disponible au dÃ©but
 		bPlay.setEnabled(false);
 		bPrecedent.setEnabled(false);
 		bPause.setEnabled(false);
 		bSuivant.setEnabled(false);
+		tChemin.setEnabled(false);
+		txtNum.setEnabled(false);
+		// Definition de la taille des zones de texte
+		
 
 		//Ajout des composant au container Image
 		// On prend la résolution de l'écran
@@ -125,7 +132,10 @@ public class Fenetre{
 
 		// Ajout du container à la fenêtre
 		frame.getContentPane().add(panelPrincipal);
-
+		//Définit sa taille : Prend les 4/5 de l'écran
+	    frame.setSize((int) screenSize.getWidth()*4/5, (int) screenSize.getHeight()*4/5);
+	    //Nous demandons maintenant à notre objet de se positionner au centre
+	    frame.setLocationRelativeTo(null);
 		// Affichage de la fenêtre
 		frame.setVisible(true);		
 
@@ -138,39 +148,37 @@ public class Fenetre{
 		bPlay.addActionListener(listen);
 		bPause.addActionListener(listen);
 
-		// Et enfin, la rendre visible
-		frame.setVisible(true);
-		go();
 	}
-
-	private void go() {
-		// Cette méthode ne change pas
-	}
-	/*
-	 * public void mousePressed(MouseEvent event) { //Nous changeons le fond de
-	 * notre image pour le jaune lors du clic gauche, avec le fichier
-	 * fondBoutonClic.png try { JFileChooser ch=new FenetreOuvrir();
-	 * this.afficherImage(ch.getSelectedFile().getAbsolutePath()); }
-	 * 
-	 * }
-	 */
 
 	public class Ecouteur implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if ((e.getSource()==bOpen) ){
-				JFileChooser ch = new FenetreOuvrir();
-				//System.out.println(ch.getSelectedFile().getAbsolutePath());
-				String str = ch.getSelectedFile().getAbsolutePath();
-				String replacedStr = str.replace('\\', '/');
-				System.out.println(replacedStr);
-				afficherImage(replacedStr);
-				int nbimg=video.getSize();
-				int nbAffiche=numImg+1;
-				txtNum.setText("N°"+nbAffiche+"/"+nbimg);
-				bPlay.setEnabled(true);
-				bPrecedent.setEnabled(true);
-				bPause.setEnabled(true);
-				bSuivant.setEnabled(true);
+				try 
+				{
+					// Si FenetreOuvrir() renvoie un fichier vidéo
+					
+					JFileChooser ch = new FenetreOuvrir();
+					String str = ch.getSelectedFile().getAbsolutePath();
+					//System.out.println(str);
+					String replacedStr = str.replace('\\', '/'); // Pour avoir un chemin exploitable
+					//System.out.println(replacedStr);
+					afficherImage(replacedStr);
+					int nbimg=video.getSize();
+					int nbAffiche=numImg+1;
+					tChemin.setText(replacedStr);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
+					txtNum.setEnabled(true);
+					bPlay.setEnabled(true);
+					bPrecedent.setEnabled(true);
+					bPause.setEnabled(true);
+					bSuivant.setEnabled(true);
+					frame.validate();
+					
+				} catch (NullPointerException e3) {
+					// Si le fichier n'est pas une video ou que l'utilisateur appuie sur Annuler
+					// FenetreOuvrir() renvoie null
+					return;
+				}
 			}
 			if (e.getSource()==bPrecedent){
 				int nbimg=video.getSize();
@@ -213,35 +221,45 @@ public class Fenetre{
 				}
 			}
 
+			if (e.getSource()==bPause){
+				
+								
+			}
+			
+			
 			if (e.getSource()==bPlay){
 				int nbimg=video.getSize();
-				ImageIcon image = new ImageIcon();
 				int i = numImg;
-
-				int skipTicks = 1000 / 60;
-
-				double nextFrameTick = System.currentTimeMillis();
+				int nbAffiche;
+				long skipTicks = 1000 / 60;
+				
+				long nextFrameTick = System.currentTimeMillis();
 				int loops;
-
 				while (i < nbimg && e.getSource()!=bPause) {
-					loops = 0;
-					image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
 
-					while (System.currentTimeMillis() < nextFrameTick + skipTicks && loops < 10000000) {
+					numImg=i;
+					
+					
+					nbAffiche=i+1;
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
+
+					loops = 0;
+					nextFrameTick = System.currentTimeMillis();
+					long tot = nextFrameTick+skipTicks;
+					while (System.currentTimeMillis() < tot && e.getSource()!=bPause && loops<10000) {
+						System.out.println(System.currentTimeMillis() + " / "+tot+" / "+loops+'\n');
+						ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+						lImage.setIcon(image);
+						panelImage.add(lImage);
+						panelImage.repaint();
+						frame.validate();
 						loops++;
 					}
-					nextFrameTick = System.currentTimeMillis();
-
 					
 					
-					int nbAffiche=i;
-					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 					
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					frame.validate();
-
+					
+					System.out.println(i+"  "+numImg+'\n');
 					i++;
 				}
 
@@ -251,24 +269,17 @@ public class Fenetre{
 			if (e.getSource()==txtNum){
 				int nbimg=video.getSize();
 				String ch=txtNum.getText();
-				boolean isInt=true;
-				for(int i=0; i<ch.length(); i++)
-				{
-					char c=ch.charAt(i);
-					if (c!='0' && c!='1' && c!='2' && c!='3' && c!='4' && c!='5' && c!='6' && c!='7' && c!='8' && c!='9')
-					{
-						isInt = false;
-					}
-				}
 				int numEntre;
-				if (isInt)
-				{
+				
+				try{
 					numEntre = Integer.parseInt(ch);
-				} else
-				{
-					numEntre = -1;
+					System.out.println(numEntre);
+				} catch (NumberFormatException e2) {
+					// Si l'utilisateur n'entre pas un nombre entier
+					System.out.println("Invalid number");
+					numEntre=-1;
 				}
-				System.out.println(numEntre);
+				
 
 				// Lorsque l'utilisateur entre une image précise
 
@@ -284,7 +295,6 @@ public class Fenetre{
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
 					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
-					// On prÃ©vient notre JFrame que notre JPanel sera son content pane
 
 					frame.validate();
 				} else
@@ -300,25 +310,21 @@ public class Fenetre{
 	public void afficherImage(String chemin) {
 
 		numImg=0;
-		System.out.println("le chemin est "+chemin);
+		//System.out.println("le chemin est "+chemin);
 		VideoCapture cap = new VideoCapture(chemin);
-		System.out.println(cap);
-		System.out.println(cap.isOpened());
+		//System.out.println(cap + " : " + cap.isOpened());
 
 		if (cap.isOpened()) {
-			System.out.println("Success");
+			System.out.println("Success to open file");
 			video = new LoadVideo(cap);
-			System.out.println("ok");
 			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
 			Image img =Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight());
-			System.out.println("ok2");
 			lImage.setIcon(image);
 			panelImage.add(lImage);
-			// On prÃ©vient notre JFrame que notre JPanel sera son content pane
 
 			frame.validate();
 		} else {
-			System.out.println("Failure");
+			System.out.println("Failure to open file");
 
 		}
 		// Instanciation d'un objet JPanel
