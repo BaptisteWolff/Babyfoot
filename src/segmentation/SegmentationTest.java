@@ -13,8 +13,8 @@ public class SegmentationTest {
 		System.loadLibrary("opencv_java2413");
 		// Test sur une image
 
-		Mat img=Highgui.imread("D:/Users/Baptiste/Pictures/testImage1.png");
-		//Segmentation test=new Segmentation(img, 95, 193, 173);
+		Mat img=Highgui.imread("Capture.png");
+		Segmentation test=new Segmentation(img, 95, 193, 173);
 		HSV hsv=new HSV(img, 842, 354);
 		int h,s,v;
 		h=hsv.getH();
@@ -22,7 +22,7 @@ public class SegmentationTest {
 		v=hsv.getV();
 		
 		// test sur une vidéo
-		VideoCapture cap = new VideoCapture("D:/Users/Baptiste/Pictures/S2ButDroite.MP4");
+		VideoCapture cap = new VideoCapture("S2ButGaucheDemi.MP4");
 		LoadVideo video = new LoadVideo(cap);
 		
 		int sizeVideo = video.getSize();
@@ -31,7 +31,7 @@ public class SegmentationTest {
 		double tpsSys = System.currentTimeMillis();
 		for (int i = 0; i < sizeVideo; i++) {
 			System.out.println("Segmentation de l'image " + (i + 1) + "/" + sizeVideo);
-			Segmentation test = new Segmentation(video.getFrame(i), h, s, v);
+			test = new Segmentation(video.getFrame(i), h, s, v);
 			X[i]=test.getX_();
 			Y[i]=test.getY_();
 		}

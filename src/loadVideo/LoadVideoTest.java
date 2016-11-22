@@ -6,7 +6,7 @@ public class LoadVideoTest {
 
 	public static void main(String[] args) {
 		System.loadLibrary("opencv_java2413");
-		VideoCapture cap = new VideoCapture("D:/Users/Baptiste/Pictures/S2ButDroite.MP4");
+		VideoCapture cap = new VideoCapture("C:/Users/louis/Documents/S2ButGaucheDemi.MP4");
 		System.out.println(cap.isOpened());
 		if (cap.isOpened()) {
 			System.out.println("Success");

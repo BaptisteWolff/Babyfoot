@@ -10,11 +10,14 @@ import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+import javax.print.attribute.standard.Media;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -47,14 +50,16 @@ public class Fenetre{
 	JFrame frame = new JFrame("Baby-Foot");
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
-	public Fenetre() {
+	PlayPause p=new PlayPause();
 
+
+	public Fenetre() {
 		// Création de la fenêtre et du container
 
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);// Plein ecran
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le processus lorsqu'on clique sur la croix rouge
-		
-		
+
+
 		JPanel panelPrincipal = new JPanel();
 		JPanel panelGauche = new JPanel();
 		JPanel panelDroit = new JPanel();
@@ -106,7 +111,7 @@ public class Fenetre{
 		tChemin.setEnabled(false);
 		txtNum.setEnabled(false);
 		// Definition de la taille des zones de texte
-		
+
 
 		//Ajout des composant au container Image
 		// On prend la résolution de l'écran
@@ -133,13 +138,15 @@ public class Fenetre{
 		// Ajout du container à la fenêtre
 		frame.getContentPane().add(panelPrincipal);
 		//Définit sa taille : Prend les 4/5 de l'écran
-	    frame.setSize((int) screenSize.getWidth()*4/5, (int) screenSize.getHeight()*4/5);
-	    //Nous demandons maintenant à notre objet de se positionner au centre
-	    frame.setLocationRelativeTo(null);
+		frame.setSize((int) screenSize.getWidth()*4/5, (int) screenSize.getHeight()*4/5);
+		//Nous demandons maintenant à notre objet de se positionner au centre
+		frame.setLocationRelativeTo(null);
 		// Affichage de la fenêtre
 		frame.setVisible(true);		
 
 		Ecouteur listen=new Ecouteur();
+		Focus focus=new Focus();
+
 
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
@@ -147,16 +154,77 @@ public class Fenetre{
 		txtNum.addActionListener(listen);
 		bPlay.addActionListener(listen);
 		bPause.addActionListener(listen);
+		txtNum.addFocusListener(focus);
 
 	}
 
+	// Pour gérer le play/pause, il faut créer une classe héritée de thread.
+
+	public class PlayPause extends Thread{		
+		boolean running = true;
+
+		PlayPause(){
+			super();
+		}
+
+		public void arret(){
+			running=false;
+		}
+
+		@Override
+		public void run(){
+			int nbimg=video.getSize();
+			int i = numImg;
+			int nbAffiche;
+			long skipTicks = 1000 / 60;	// 60 fps
+
+			long nextFrameTick = System.currentTimeMillis();
+			int loops;
+			while (i < nbimg && running) {
+
+				numImg=i;
+
+				loops = 0;
+				nextFrameTick = System.currentTimeMillis();
+				long tot = nextFrameTick+skipTicks;
+				while (System.currentTimeMillis() < tot && loops<10000 && running) {
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					panelImage.repaint();
+					frame.validate();
+					loops++;
+					nbAffiche=numImg+1;
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
+				}
+
+				i++;
+			}
+
+		}  
+	}
+
+
+	public class Focus implements FocusListener{
+		public void focusGained(FocusEvent e){
+			if (e.getSource()==txtNum){
+				txtNum.selectAll();
+			}
+		}
+
+		public void focusLost(FocusEvent e) {
+			
+		}
+	}
+		
 	public class Ecouteur implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+
 			if ((e.getSource()==bOpen) ){
 				try 
 				{
 					// Si FenetreOuvrir() renvoie un fichier vidéo
-					
+
 					JFileChooser ch = new FenetreOuvrir();
 					String str = ch.getSelectedFile().getAbsolutePath();
 					//System.out.println(str);
@@ -173,7 +241,7 @@ public class Fenetre{
 					bPause.setEnabled(true);
 					bSuivant.setEnabled(true);
 					frame.validate();
-					
+
 				} catch (NullPointerException e3) {
 					// Si le fichier n'est pas une video ou que l'utilisateur appuie sur Annuler
 					// FenetreOuvrir() renvoie null
@@ -186,15 +254,11 @@ public class Fenetre{
 					numImg--;
 
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-
 					lImage.setIcon(image);
-
 					panelImage.add(lImage);
-
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
 					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
-					// On prÃ©vient notre JFrame que notre JPanel sera son content pane
 
 					frame.validate();
 
@@ -206,71 +270,37 @@ public class Fenetre{
 					numImg++;
 
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-
 					lImage.setIcon(image);
-
 					panelImage.add(lImage);
-
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
 					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
-					// On prÃ©vient notre JFrame que notre JPanel sera son content pane
 
 					frame.validate();
 
 				}
 			}
 
-			if (e.getSource()==bPause){
-				
-								
-			}
-			
-			
 			if (e.getSource()==bPlay){
-				int nbimg=video.getSize();
-				int i = numImg;
-				int nbAffiche;
-				long skipTicks = 1000 / 60;
-				
-				long nextFrameTick = System.currentTimeMillis();
-				int loops;
-				while (i < nbimg && e.getSource()!=bPause) {
-
-					numImg=i;
-					
-					
-					nbAffiche=i+1;
-					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
-
-					loops = 0;
-					nextFrameTick = System.currentTimeMillis();
-					long tot = nextFrameTick+skipTicks;
-					while (System.currentTimeMillis() < tot && e.getSource()!=bPause && loops<10000) {
-						System.out.println(System.currentTimeMillis() + " / "+tot+" / "+loops+'\n');
-						ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-						lImage.setIcon(image);
-						panelImage.add(lImage);
-						panelImage.repaint();
-						frame.validate();
-						loops++;
-					}
-					
-					
-					
-					
-					System.out.println(i+"  "+numImg+'\n');
-					i++;
+				if (!p.isAlive())
+				{
+					p=new PlayPause();
+					p.start();
+					System.out.println("running...");
 				}
-
 			}
 
+			if (e.getSource()==bPause){
+				p.arret();
+				System.out.println("paused");				
+			}
 
 			if (e.getSource()==txtNum){
+				txtNum.selectAll();
 				int nbimg=video.getSize();
 				String ch=txtNum.getText();
 				int numEntre;
-				
+
 				try{
 					numEntre = Integer.parseInt(ch);
 					System.out.println(numEntre);
@@ -279,7 +309,7 @@ public class Fenetre{
 					System.out.println("Invalid number");
 					numEntre=-1;
 				}
-				
+
 
 				// Lorsque l'utilisateur entre une image précise
 
