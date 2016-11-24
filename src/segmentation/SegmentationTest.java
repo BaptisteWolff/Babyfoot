@@ -14,8 +14,8 @@ public class SegmentationTest {
 		// Test sur une image
 
 		Mat img=Highgui.imread("Capture.png");
-		Segmentation test=new Segmentation(img, 95, 193, 173);
-		HSV hsv=new HSV(img, 842, 354);
+		Segmentation test;
+		HSV hsv=new HSV(img, 1247, 593);
 		int h,s,v;
 		h=hsv.getH();
 		s=hsv.getS();

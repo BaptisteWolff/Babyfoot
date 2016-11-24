@@ -42,6 +42,7 @@ public class LoadVideo {
 	// Affiche la vidéo dans une nouvelle fenêtre
 	// Sources pour afficher la vidéo à un raffraichissement donné :
 	// http://stackoverflow.com/questions/771206/how-do-i-cap-my-framerate-at-60-fps-in-java
+	
 	public void displayVideo(int framesPerSecond, int startFrame) {
 		JFrame jframe = new JFrame("video");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,8 +71,26 @@ public class LoadVideo {
 		}
 		System.out.println("end");
 	}
+	
+	/* POUR LIBERER L'ESPACE MEMOIRE DE LA VIDEO */
+	
+	public void libererVideo() {
+		try 
+		{
+			for(int i=0; i<=frames_.size(); i++)
+			{
+				frames_.get(i).release();
+			}
+		} catch (Exception x)
+		{
+			System.out.println("Echec à la suppression video");
+		}
+	}
 
-	// Affiche une vidéo avec les barycentres
+	
+
+	/* AFFICHE UNE VIDEO AVEC LES BARYCENTRES */
+	
 	public void displayVideoBarycentres(int framesPerSecond, int startFrame, int barycentres[][]) {
 		JFrame jframe = new JFrame("video");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,17 +124,14 @@ public class LoadVideo {
 			y = Y[i];
 
 			// Tracer une croix représentant le barycentre
-			for (int j = 0; j < 20; j++) {
-
-				if (j + y - 10 <= height_ && y + j - 10 >= 0) {
-					frame.put(y + j - 10, x, data);
+			for (int j = -6; j < 6; j++) {
+				for (int k = -6; k < 6; k++) {
+					if (k+x <= width_ && x+k >= 0 && j+y<=height_ && j+y >=0) {
+						frame.put(y+j, x+k, data);
+					}
 				}
 			}
-			for (int j = 0; j < 20; j++) {
-				if (j + x - 10 <= width_ && x + j - 10 >= 0) {
-					frame.put(y, x + j - 10, data);
-				}
-			}
+			
 
 			image = new ImageIcon(Mat2bufferedImage(frame, width_, height_));
 
@@ -130,8 +146,9 @@ public class LoadVideo {
 		}
 		System.out.println("end");
 	}
+	
+	/* RETOURNE UNE IMAGE DE LA VIDEO */
 
-	// Retourne une image de la vidéo
 	public Mat getFrame(int numFrame) {
 		return frames_.get(numFrame);
 	}
@@ -152,7 +169,9 @@ public class LoadVideo {
 		frames_.add(frame);
 	}
 
-	// Affiche une image de la vidéo dans une nouvelle fenêtre
+
+	/* AFFICHE UNE IMAGE DE LA VIDEO DANS UNE NOUVELLE FENETRE */
+	
 	public void displayFrame(int numFrame) {
 		// Highgui.imwrite(imgStr,m);
 		JFrame frame = new JFrame("Image " + numFrame + "/" + frames_.size());
@@ -163,7 +182,7 @@ public class LoadVideo {
 
 		// Inserts the image icon
 		ImageIcon image = new ImageIcon(Mat2bufferedImage(frames_.get(numFrame), width_, height_));
-		frame.setSize(image.getIconWidth() + 10, image.getIconHeight() + 35); // taille
+		frame.setSize(image.getIconWidth() + 10, image.getIconHeight() + 35); 	// taille
 																				// GUI
 		// Draw the Image data into the BufferedImage
 		JLabel label1 = new JLabel(" ", image, JLabel.CENTER);
@@ -173,7 +192,9 @@ public class LoadVideo {
 		frame.setVisible(true);
 	}
 
+	/* CONVERTIR UNE IMAGE Mat EN BufferedImage */
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
+	
 	public static BufferedImage Mat2bufferedImage(Mat in, int width, int height) {
 		BufferedImage out;
 		Mat in2 = new Mat();
