@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.TextField;
 import java.awt.Toolkit;
@@ -12,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
@@ -34,6 +37,7 @@ import loadVideo.LoadVideo;
 public class Fenetre{
 
 	int numImg=0;
+	int c=0;
 	LoadVideo video;
 	JButton bOpen = new JButton("Ouvrir");
 	JButton bCommencer = new JButton("Commencer");
@@ -41,7 +45,7 @@ public class Fenetre{
 	JButton bselect = new JButton("Selectionner le centre de la balle");
 	JButton bselect2 = new JButton("Selectionner les lignes");
 	JButton bPause = new JButton("Pause");
-	JButton bPrecedent = new JButton("PrÃ©cÃ©dent");
+	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
 	JTextField tChemin = new JTextField("Chemin");
 	JTextField txtNum = new JTextField();
@@ -56,7 +60,7 @@ public class Fenetre{
 
 
 	public Fenetre() {
-		// CrÃ©ation de la fenÃªtre et du container
+		// Création de la fenêtre et du container
 
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);// Plein ecran
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le processus lorsqu'on clique sur la croix rouge
@@ -68,8 +72,9 @@ public class Fenetre{
 		JPanel panelLecture = new JPanel();
 		JPanel panelChemin = new JPanel();
 		JPanel panelGroup = new JPanel();
+		JPanel panelGroup2 = new JPanel();
 
-		// DÃ©finition du gestionnaire de placement
+		// Définition du gestionnaire de placement
 		panelPrincipal.setLayout(new BorderLayout());
 		panelGauche.setLayout(new BorderLayout());
 		panelDroit.setLayout(new BorderLayout());
@@ -78,7 +83,7 @@ public class Fenetre{
 
 		//panelImage.setLayout(new CardLayout(10,10));
 
-		// CrÃ©ation des composants
+		// Création des composants
 		JLabel label = new JLabel("Entrer votre nom");
 
 
@@ -94,8 +99,12 @@ public class Fenetre{
 		panelGroup.add(plusmoins);
 		panelGroup.add(plus);
 		panelGroup.add(moins);
+		panelGroup2.add(bselect2);
+		panelGroup2.add(bCommencer);
+		panelGroup2.add(bselect);
 		panelGauche.add(panelGroup,BorderLayout.CENTER);
-		panelGauche.add(bCommencer, BorderLayout.SOUTH);
+		panelGauche.add(panelGroup2, BorderLayout.SOUTH);
+		
 
 
 
@@ -105,7 +114,7 @@ public class Fenetre{
 		panelLecture.add(bPlay);
 		panelLecture.add(bPause);		
 		panelLecture.add(bSuivant);
-		// Boutons play non disponible au dÃƒÂ©but
+		// Boutons play non disponible au début
 		bPlay.setEnabled(false);
 		bPrecedent.setEnabled(false);
 		bPause.setEnabled(false);
@@ -117,12 +126,12 @@ public class Fenetre{
 
 
 		//Ajout des composant au container Image
-		// On prend la rÃ©solution de l'Ã©cran
+		// On prend la résolution de l'écran
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int) screenSize.getWidth();
 		int height = (int) screenSize.getHeight();
 		Dimension dimIm=new Dimension(width*2/3, height*2/3);//Dimension image
-		// Taille par dÃ©faut lorsqu'on est pas en plein Ã©cran
+		// Taille par défaut lorsqu'on est pas en plein écran
 		panelImage.setPreferredSize(dimIm);
 		panelImage.setMaximumSize(dimIm);
 		panelImage.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -138,13 +147,13 @@ public class Fenetre{
 		panelPrincipal.add(panelDroit, BorderLayout.EAST);
 
 
-		// Ajout du container Ã  la fenÃªtre
+		// Ajout du container à  la fenêtre
 		frame.getContentPane().add(panelPrincipal);
-		//DÃ©finit sa taille : Prend les 4/5 de l'Ã©cran
+		//Définit sa taille : Prend les 4/5 de l'écran
 		frame.setSize((int) screenSize.getWidth()*4/5, (int) screenSize.getHeight()*4/5);
-		//Nous demandons maintenant Ã  notre objet de se positionner au centre
+		//Nous demandons maintenant à  notre objet de se positionner au centre
 		frame.setLocationRelativeTo(null);
-		// Affichage de la fenÃªtre
+		// Affichage de la fenêtre
 		frame.setVisible(true);		
 
 		Ecouteur listen=new Ecouteur();
@@ -160,10 +169,10 @@ public class Fenetre{
 		txtNum.addFocusListener(focus);
 		bselect.addActionListener(listen);
 		bselect2.addActionListener(listen);
-
+		panelImage.addMouseListener(new EcouteClic(panelImage));
 	}
 
-	// Pour gÃ©rer le play/pause, il faut crÃ©er une classe hÃ©ritÃ©e de thread.
+	// Pour gérer le play/pause, il faut créer une classe héritée de thread.
 	
 	public class EcouteClic extends MouseAdapter{
         private JPanel pan;
@@ -180,7 +189,7 @@ public class Fenetre{
         	if (c==0){
         		x = e.getX();
                 y = e.getY();
-                System.out.println("coordonnÃ©es"+e.getX()+","+e.getY());
+                System.out.println("coordonnées"+e.getX()+","+e.getY());
                 Graphics g = pan.getGraphics();
                 g.drawOval(e.getX(),e.getY(), 5, 5);
                 g.dispose();
@@ -255,7 +264,7 @@ public class Fenetre{
 					frame.validate();
 					loops++;
 					nbAffiche=numImg+1;
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 				}
 
 				i++;
@@ -279,7 +288,7 @@ public class Fenetre{
 		
 	public class Ecouteur implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (e.getSource()== bselect){
+		if (e.getSource()== bselect){
         		c=0;
         		System.out.println("select");
 			}
@@ -292,7 +301,7 @@ public class Fenetre{
 			if ((e.getSource()==bOpen) ){
 				try 
 				{
-					// Si FenetreOuvrir() renvoie un fichier vidÃ©o
+					// Si FenetreOuvrir() renvoie un fichier vidéo
 
 					JFileChooser ch = new FenetreOuvrir();
 					String str = ch.getSelectedFile().getAbsolutePath();
@@ -303,7 +312,7 @@ public class Fenetre{
 					int nbimg=video.getSize();
 					int nbAffiche=numImg+1;
 					tChemin.setText(replacedStr);
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 					txtNum.setEnabled(true);
 					bPlay.setEnabled(true);
 					bPrecedent.setEnabled(true);
@@ -327,7 +336,7 @@ public class Fenetre{
 					panelImage.add(lImage);
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 
 					frame.validate();
 
@@ -343,7 +352,7 @@ public class Fenetre{
 					panelImage.add(lImage);
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 
 					frame.validate();
 
@@ -380,7 +389,7 @@ public class Fenetre{
 				}
 
 
-				// Lorsque l'utilisateur entre une image prÃ©cise
+				// Lorsque l'utilisateur entre une image précise
 
 				if (numEntre>0 && numEntre<=nbimg){
 					numImg=numEntre-1;
@@ -393,13 +402,13 @@ public class Fenetre{
 
 					panelImage.repaint();
 					int nbAffiche=numImg+1;
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 
 					frame.validate();
 				} else
 				{
 					int nbAffiche=numImg+1;
-					txtNum.setText("NÂ°"+nbAffiche+"/"+nbimg);
+					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 				}
 			}
 		}

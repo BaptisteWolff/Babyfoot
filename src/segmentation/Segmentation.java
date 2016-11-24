@@ -35,6 +35,7 @@ public class Segmentation {
 						&& (hsvImage.get(y, x)[2] > max(0, v - 70)) && (hsvImage.get(y, x)[2] < min(255, v + 80))) {
 					sommeX += x;
 					sommeY += y;
+					nbPixels++;
 				}
 			}
 		}
