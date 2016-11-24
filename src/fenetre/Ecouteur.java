@@ -15,16 +15,21 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
 import fenetre.PlayPause;
 import loadVideo.LoadVideo;
+import segmentation.HSV;
+import segmentation.Segmentation;
 
 public class Ecouteur implements ActionListener{
 	int numImg=0;
 	int c=0;
 	LoadVideo video;
+	int[][] barycentres;
+	boolean videoSeg = false;
 	JButton bOpen = new JButton("Ouvrir");
 	JButton bCommencer = new JButton("Commencer");
 	JButton bPlay = new JButton("Play");
@@ -43,15 +48,17 @@ public class Ecouteur implements ActionListener{
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
 	
-	PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
+	PlayPause p = new PlayPause(numImg,barycentres,videoSeg,video,frame,panelImage,lImage,txtNum);
 	
-	public Ecouteur(int numImg, int c, LoadVideo video, JButton bOpen, JButton bCommencer, JButton bPlay,
+	public Ecouteur(int numImg, int c,int[][] barycentres, boolean videoSeg, LoadVideo video, JButton bOpen, JButton bCommencer, JButton bPlay,
 			JButton bselect, JButton bselect2, JButton bPause, JButton bPrecedent, JButton bSuivant, JTextField tChemin,
 			JTextField txtNum, JRadioButton plusmoins, JRadioButton plus, JRadioButton moins, ButtonGroup choixGam,
 			JFrame frame, JPanel panelImage, JLabel lImage) {
 		super();
 		this.numImg = numImg;
 		this.c = c;
+		this.barycentres=barycentres;
+		this.videoSeg = videoSeg;
 		this.video = video;
 		this.bOpen = bOpen;
 		this.bCommencer = bCommencer;
@@ -106,6 +113,7 @@ public class Ecouteur implements ActionListener{
 				bPrecedent.setEnabled(true);
 				bPause.setEnabled(true);
 				bSuivant.setEnabled(true);
+				bCommencer.setEnabled(true);
 				frame.validate();
 
 			} catch (NullPointerException e3) {
@@ -150,7 +158,7 @@ public class Ecouteur implements ActionListener{
 		if (e.getSource()==bPlay){
 			if (!p.isAlive())
 			{
-				p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
+				p = new PlayPause(numImg,barycentres,videoSeg,video,frame,panelImage,lImage,txtNum);
 				p.start();
 				System.out.println("running...");
 				
@@ -200,6 +208,40 @@ public class Ecouteur implements ActionListener{
 				int nbAffiche=numImg+1;
 				txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 			}
+		}
+		
+		if (e.getSource() == bCommencer) {
+
+			System.out.println("Début segmentation");
+			Mat img = Highgui.imread("Capture.png");
+			Segmentation test = new Segmentation(img, 95, 193, 173);
+			HSV hsv = new HSV(img, 842, 354);
+			int h, s, v;
+			h = hsv.getH();
+			s = hsv.getS();
+			v = hsv.getV();
+
+			// test sur une vidéo
+
+			int sizeVideo = video.getSize();
+			// barycentres=new int[sizeVideo][sizeVideo];
+			int X[] = new int[sizeVideo];
+			int Y[] = new int[sizeVideo];
+
+			double tpsSys = System.currentTimeMillis();
+			for (int i = 0; i < sizeVideo; i++) {
+				System.out.println("Segmentation de l'image " + (i + 1) + "/" + sizeVideo);
+				test = new Segmentation(video.getFrame(i), h, s, v);
+				X[i] = test.getX_();
+				Y[i] = test.getY_();
+
+			}
+
+			int[][] barycentres2 = { X, Y };
+			barycentres = barycentres2;
+			tpsSys = System.currentTimeMillis() - tpsSys;
+			System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
+			videoSeg = true;
 		}
 	}
 	

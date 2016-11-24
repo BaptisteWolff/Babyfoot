@@ -44,6 +44,8 @@ public class Fenetre{
 	JFrame frame = new JFrame("Baby-Foot");
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
+	int[][] barycentres;
+	boolean videoSeg = false;
 	//PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
 
@@ -110,6 +112,7 @@ public class Fenetre{
 		tChemin.setEnabled(false);
 		txtNum.setEnabled(false);
 		bselect.setEnabled(false);
+		bCommencer.setEnabled(false);
 		// Definition de la taille des zones de texte
 
 
@@ -145,7 +148,7 @@ public class Fenetre{
 		frame.setVisible(true);		
 
 		
-		Ecouteur listen=new Ecouteur(numImg,c,video,bOpen,bCommencer,bPlay,bselect,bselect2,bPause,bPrecedent,bSuivant,tChemin,txtNum,plusmoins,plus,moins,choixGam,
+		Ecouteur listen=new Ecouteur(numImg,c,barycentres,videoSeg,video,bOpen,bCommencer,bPlay,bselect,bselect2,bPause,bPrecedent,bSuivant,tChemin,txtNum,plusmoins,plus,moins,choixGam,
 		frame,panelImage,lImage);
 		Focus focus=new Focus(txtNum);
 
@@ -156,6 +159,7 @@ public class Fenetre{
 		txtNum.addActionListener(listen);
 		bPlay.addActionListener(listen);
 		bPause.addActionListener(listen);
+		bCommencer.addActionListener(listen);
 		txtNum.addFocusListener(focus);
 		bselect.addActionListener(listen);
 		bselect2.addActionListener(listen);
