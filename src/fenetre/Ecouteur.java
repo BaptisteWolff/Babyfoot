@@ -28,7 +28,6 @@ public class Ecouteur implements ActionListener{
 	int numImg=0;
 	int c=0;
 	LoadVideo video;
-	int[][] barycentres;
 	boolean videoSeg = false;
 	JButton bOpen = new JButton("Ouvrir");
 	JButton bCommencer = new JButton("Commencer");
@@ -48,7 +47,7 @@ public class Ecouteur implements ActionListener{
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
 	
-	PlayPause p = new PlayPause(numImg,barycentres,videoSeg,video,frame,panelImage,lImage,txtNum);
+	PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 	
 	public Ecouteur(int numImg, int c,int[][] barycentres, boolean videoSeg, LoadVideo video, JButton bOpen, JButton bCommencer, JButton bPlay,
 			JButton bselect, JButton bselect2, JButton bPause, JButton bPrecedent, JButton bSuivant, JTextField tChemin,
@@ -57,7 +56,6 @@ public class Ecouteur implements ActionListener{
 		super();
 		this.numImg = numImg;
 		this.c = c;
-		this.barycentres=barycentres;
 		this.videoSeg = videoSeg;
 		this.video = video;
 		this.bOpen = bOpen;
@@ -114,6 +112,8 @@ public class Ecouteur implements ActionListener{
 				bPause.setEnabled(true);
 				bSuivant.setEnabled(true);
 				bCommencer.setEnabled(true);
+				bselect.setEnabled(true);
+				bselect2.setEnabled(true);
 				frame.validate();
 
 			} catch (NullPointerException e3) {
@@ -158,10 +158,10 @@ public class Ecouteur implements ActionListener{
 		if (e.getSource()==bPlay){
 			if (!p.isAlive())
 			{
-				p = new PlayPause(numImg,barycentres,videoSeg,video,frame,panelImage,lImage,txtNum);
-				p.start();
-				System.out.println("running...");
-				
+				p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);	
+				System.out.println("avant"+numImg);
+				p.start();				
+						
 			}
 		}
 
@@ -211,7 +211,7 @@ public class Ecouteur implements ActionListener{
 		}
 		
 		if (e.getSource() == bCommencer) {
-
+			numImg=0;
 			System.out.println("Début segmentation");
 			Mat img = Highgui.imread("Capture.png");
 			Segmentation test = new Segmentation(img, 95, 193, 173);
@@ -223,25 +223,48 @@ public class Ecouteur implements ActionListener{
 
 			// test sur une vidéo
 
-			int sizeVideo = video.getSize();
+			int nbImg = video.getSize();
 			// barycentres=new int[sizeVideo][sizeVideo];
-			int X[] = new int[sizeVideo];
-			int Y[] = new int[sizeVideo];
+			int x = 0;
+			int y = 0;
+			
+			Mat frame2 = new Mat();
 
+			double[] data = { 0, 0, 255 };
 			double tpsSys = System.currentTimeMillis();
-			for (int i = 0; i < sizeVideo; i++) {
-				System.out.println("Segmentation de l'image " + (i + 1) + "/" + sizeVideo);
+			for (int i = 0; i < nbImg; i++) {
+				frame2 = video.getFrame(i);
+				System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
 				test = new Segmentation(video.getFrame(i), h, s, v);
-				X[i] = test.getX_();
-				Y[i] = test.getY_();
+				x = test.getX_();
+				y = test.getY_();
+				for (int j = 0; j < 20; j++) {
 
+					if (j + y - 10 <= video.getHeight() && y + j - 10 >= 0) {
+						frame2.put(y + j - 10, x, data);
+					}
+				}
+				for (int j = 0; j < 20; j++) {
+					if (j + x - 10 <= video.getWidth() && x + j - 10 >= 0) {
+						frame2.put(y, x + j - 10, data);
+					}
+				}
+								
 			}
-
-			int[][] barycentres2 = { X, Y };
-			barycentres = barycentres2;
+			
+			
 			tpsSys = System.currentTimeMillis() - tpsSys;
 			System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
 			videoSeg = true;
+			ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+			
+			lImage.setIcon(image);
+			panelImage.add(lImage);
+			int nbAffiche=numImg+1;
+			txtNum.setText("N°"+nbAffiche+"/"+nbImg);
+			frame.validate();
+			
+			bCommencer.setEnabled(false);
 		}
 	}
 	

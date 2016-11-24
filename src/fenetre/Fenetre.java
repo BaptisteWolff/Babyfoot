@@ -112,6 +112,7 @@ public class Fenetre{
 		tChemin.setEnabled(false);
 		txtNum.setEnabled(false);
 		bselect.setEnabled(false);
+		bselect2.setEnabled(false);
 		bCommencer.setEnabled(false);
 		// Definition de la taille des zones de texte
 
