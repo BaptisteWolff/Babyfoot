@@ -93,16 +93,6 @@ public class Segmentation {
 		y_ = Y;
 		
 		hsvImage.release();
-
-		// ***** Test ********
-
-		// double[] data2 = hsvImage.get(Y, X);
-		// System.out.println(""+data2[0]+" "+data2[1]+" "+data2[2]);
-
-		// System.out.println("x = " + X + "; y = " + Y);
-
-		// Highgui.imwrite("D:/Users/Baptiste/Pictures/BigMaccadam/hsvImage.jpg",
-		// hsvImage);
 	}
 
 	public int getX_() {

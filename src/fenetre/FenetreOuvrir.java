@@ -20,7 +20,7 @@ public class FenetreOuvrir extends JFileChooser {
 	       
 	       
 	       // On vérifie qu'il s'agit bien d'une video
-	       String extension = "fail";
+	       String extension = "invalid extension";
 	       int i = file.getName().lastIndexOf('.');
 	       if (i > 0) {
 	           extension = file.getName().substring(i+1);

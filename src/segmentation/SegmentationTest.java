@@ -22,7 +22,7 @@ public class SegmentationTest {
 		v=hsv.getV();
 		
 		// test sur une vidéo
-		VideoCapture cap = new VideoCapture("S2ButGaucheDemi.MP4");
+		VideoCapture cap = new VideoCapture("S3GammelleDroite.MP4");
 		LoadVideo video = new LoadVideo(cap);
 		
 		int sizeVideo = video.getSize();
@@ -30,10 +30,14 @@ public class SegmentationTest {
 		int Y[]=new int[sizeVideo];
 		double tpsSys = System.currentTimeMillis();
 		for (int i = 0; i < sizeVideo; i++) {
-			System.out.println("Segmentation de l'image " + (i + 1) + "/" + sizeVideo);
+			System.out.println("Segmentation de l'image " + (i + 1) + "/" + sizeVideo + " - " + (int)(i+1)*100/sizeVideo + " %");
 			test = new Segmentation(video.getFrame(i), h, s, v);
 			X[i]=test.getX_();
 			Y[i]=test.getY_();
+//			if (test.getX_()>video.getWidth()*0.4 && test.getX_()<video.getWidth()*0.6)
+//			{
+//				i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
+//			}
 		}
 		int[][] barycentres={X,Y};
 		tpsSys = System.currentTimeMillis() - tpsSys;

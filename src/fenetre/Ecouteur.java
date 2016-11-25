@@ -159,7 +159,7 @@ public class Ecouteur implements ActionListener{
 			if (!p.isAlive())
 			{
 				p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);	
-				System.out.println("avant"+numImg);
+				//System.out.println("play: "+numImg);
 				p.start();				
 						
 			}
@@ -167,7 +167,7 @@ public class Ecouteur implements ActionListener{
 
 		if (e.getSource()==bPause){
 			p.arret();
-			System.out.println("paused");		
+			//System.out.println("paused");		
 			numImg=p.getNumImg();
 		}
 
@@ -179,7 +179,7 @@ public class Ecouteur implements ActionListener{
 
 			try{
 				numEntre = Integer.parseInt(ch);
-				System.out.println(numEntre);
+				//System.out.println(numEntre);
 			} catch (NumberFormatException e2) {
 				// Si l'utilisateur n'entre pas un nombre entier
 				System.out.println("Invalid number");
@@ -215,7 +215,7 @@ public class Ecouteur implements ActionListener{
 			System.out.println("Début segmentation");
 			Mat img = Highgui.imread("Capture.png");
 			Segmentation test = new Segmentation(img, 95, 193, 173);
-			HSV hsv = new HSV(img, 842, 354);
+			HSV hsv = new HSV(img, 1247, 593);	//coordonnées du ballon sur l'image référence
 			int h, s, v;
 			h = hsv.getH();
 			s = hsv.getS();
@@ -238,15 +238,17 @@ public class Ecouteur implements ActionListener{
 				test = new Segmentation(video.getFrame(i), h, s, v);
 				x = test.getX_();
 				y = test.getY_();
-				for (int j = 0; j < 20; j++) {
+//				if (test.getX_()>video.getWidth()*0.4 && test.getX_()<video.getWidth()*0.6)
+//				{
+//					i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
+//				}
 
-					if (j + y - 10 <= video.getHeight() && y + j - 10 >= 0) {
-						frame2.put(y + j - 10, x, data);
-					}
-				}
-				for (int j = 0; j < 20; j++) {
-					if (j + x - 10 <= video.getWidth() && x + j - 10 >= 0) {
-						frame2.put(y, x + j - 10, data);
+				// Tracer un carré rouge représentant le barycentre
+				for (int j = -6; j < 6; j++) {
+					for (int k = -6; k < 6; k++) {
+						if (k+x <= video.getWidth() && x+k >= 0 && j+y<=video.getHeight() && j+y >=0) {
+							frame2.put(y+j, x+k, data);
+						}
 					}
 				}
 								
@@ -271,7 +273,13 @@ public class Ecouteur implements ActionListener{
 	public void afficherImage(String chemin) {
 
 		numImg=0;
-		//System.out.println("le chemin est "+chemin);
+		
+		if(lImage.getMaximumSize().getHeight()>0 && lImage.getMaximumSize().getWidth()>0) // Si on a déjà ouvert une video auparavant
+		{
+			video.libererVideo();	// on libère la mémoire
+			lImage.removeAll();
+			System.out.println("video deleted");
+		}
 		VideoCapture cap = new VideoCapture(chemin);
 		//System.out.println(cap + " : " + cap.isOpened());
 

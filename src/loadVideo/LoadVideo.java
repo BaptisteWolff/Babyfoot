@@ -77,7 +77,7 @@ public class LoadVideo {
 	public void libererVideo() {
 		try 
 		{
-			for(int i=0; i<=frames_.size(); i++)
+			for(int i=0; i<frames_.size(); i++)
 			{
 				frames_.get(i).release();
 			}
@@ -123,7 +123,7 @@ public class LoadVideo {
 			x = X[i];
 			y = Y[i];
 
-			// Tracer une croix représentant le barycentre
+			// Tracer un carré rouge représentant le barycentre
 			for (int j = -6; j < 6; j++) {
 				for (int k = -6; k < 6; k++) {
 					if (k+x <= width_ && x+k >= 0 && j+y<=height_ && j+y >=0) {
