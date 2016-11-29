@@ -1,13 +1,16 @@
 package loadVideo;
 
 import java.util.ArrayList;
-
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
@@ -122,15 +125,13 @@ public class LoadVideo {
 			frame = frames_.get(i);
 			x = X[i];
 			y = Y[i];
-
-			// Tracer un carré rouge représentant le barycentre
-			for (int j = -6; j < 6; j++) {
-				for (int k = -6; k < 6; k++) {
-					if (k+x <= width_ && x+k >= 0 && j+y<=height_ && j+y >=0) {
-						frame.put(y+j, x+k, data);
-					}
-				}
-			}
+			
+			Point centre=new Point(x,y);
+			int rayon = 10;
+			Scalar color = new Scalar (0,0,255);
+			// Tracer un cercle rouge représentant le barycentre
+			
+			Core.circle(frame, centre, rayon, color, -1); // -1: rempli le cercle
 			
 
 			image = new ImageIcon(Mat2bufferedImage(frame, width_, height_));

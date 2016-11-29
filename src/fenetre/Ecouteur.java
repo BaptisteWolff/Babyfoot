@@ -14,7 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
@@ -243,14 +246,13 @@ public class Ecouteur implements ActionListener{
 //					i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
 //				}
 
-				// Tracer un carré rouge représentant le barycentre
-				for (int j = -6; j < 6; j++) {
-					for (int k = -6; k < 6; k++) {
-						if (k+x <= video.getWidth() && x+k >= 0 && j+y<=video.getHeight() && j+y >=0) {
-							frame2.put(y+j, x+k, data);
-						}
-					}
-				}
+				Point centre=new Point(x,y);
+				int rayon = 10;
+				Scalar color = new Scalar (0,0,255);
+				// Tracer un cercle rouge représentant le barycentre
+				
+				Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+				
 								
 			}
 			
