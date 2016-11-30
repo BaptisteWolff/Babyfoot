@@ -271,6 +271,9 @@ public class Ecouteur implements ActionListener{
 			bCommencer.setEnabled(false);
 		}
 	}
+	public int getC() {
+		return c;
+	}
 	
 	public void afficherImage(String chemin) {
 
