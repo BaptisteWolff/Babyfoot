@@ -1,0 +1,128 @@
+package sauvegarde;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import events.Player;
+
+public class Sauvegarde {
+
+
+	public static void write(Player j1, Player j2, int regle) throws IOException{
+
+		int score1=0;
+		int score2=0;
+
+		for(int i=0;i<5;i++){
+			j1.addGamelle(i);
+			j1.addGoal(i);
+			j1.addOut(i);
+		}
+		for(int i=10;i<17;i++){
+			j2.addGamelle(i);
+			j2.addGoal(i);
+			j2.addOut(i);
+		}
+		ArrayList <Integer> gam1=j1.getGamelle();
+		ArrayList <Integer> gam2=j2.getGamelle();
+		ArrayList <Integer> goal1=j1.getGoal();
+		ArrayList <Integer> goal2=j2.getGoal();
+		ArrayList <Integer> out1=j1.getOut();
+		ArrayList <Integer> out2=j2.getOut();
+		int nbGam1=gam1.size();
+		int nbGam2=gam2.size();
+		int nbGoal1=goal1.size();
+		int nbGoal2=goal2.size();
+		int nbOut1=out1.size();
+		int nbOut2=out2.size();
+
+		// on calcul le score
+
+		if (regle==1){//regle plus 1
+			score1=nbGoal1+nbGam1-2;
+			score2=nbGoal2+nbGam2-2;
+		}else if(regle==2){ //regle moins 1 
+			score1=nbGoal1-nbGam2;
+			score2=nbGoal2-nbGam1;
+		}else  {//regle plus 1 moins 1
+			score1=nbGoal1+nbGam1-nbGam2-1;
+			score2=nbGoal2+nbGam2-nbGam1-1;
+		}
+		System.out.println("1  "+score1);
+		System.out.println("2  "+score2);
+
+
+
+
+
+		try {
+			BufferedWriter fichier = new BufferedWriter(new FileWriter("NewDoc.txt"));
+			fichier.write("Résumé du match");
+
+			fichier.newLine();
+			fichier.write("Score       Equipe 1          Equipe 2" );
+			fichier.newLine();
+			fichier.write("                "+score1+"                   "+score2 );
+			fichier.newLine();
+			fichier.newLine();
+			fichier.write("------------Equipe 1---------------");
+			fichier.newLine();
+			fichier.write("***But*** : "+(nbGoal1-1));
+			for(int i=0;i<nbGoal1;i++){
+				fichier.newLine();
+				fichier.write(goal1.get(i)+"\n");
+			}
+			fichier.newLine();
+			fichier.write("***Gamelle*** : "+ (nbGam1-1));
+			for(int i=0;i<nbGam1;i++){
+				fichier.newLine();
+				fichier.write(gam1.get(i)+"\n");
+			}
+			fichier.newLine();
+			fichier.write("***Sortie*** : "+(nbOut1-1));
+			for(int i=0;i<nbOut1;i++){
+				fichier.newLine();
+				fichier.write(out1.get(i)+"\n");
+			}
+			fichier.newLine();
+			fichier.write("------------Equipe 2---------------");
+			fichier.newLine();
+			fichier.write("***But*** : "+(nbGoal2-1));
+			for(int i=0;i<nbGoal2;i++){
+				fichier.newLine();
+				fichier.write(goal2.get(i)+"\n");
+			}
+			fichier.newLine();
+			fichier.write("***Gamelle*** : "+ (nbGam2-1));
+			for(int i=0;i<nbGam2;i++){
+				fichier.newLine();
+				fichier.write(gam2.get(i)+"\n");
+			}
+			fichier.newLine();
+			fichier.write("***Sortie*** : "+(nbOut2-1));
+			for(int i=0;i<nbOut2;i++){
+				fichier.newLine();
+				fichier.write(out2.get(i)+"\n");
+			}
+			fichier . close ();
+			System.out.println("ok");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}    
+	}
+
+
+	public static void main ( String [] args ) throws IOException
+	{
+		Player j1=new Player();
+		Player j2=new Player();
+
+		write(j1, j2,1);
+	}
+}
+
+

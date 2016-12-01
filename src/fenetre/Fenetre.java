@@ -39,7 +39,7 @@ import segmentation.HSV;
 import segmentation.Segmentation;
 
 public class Fenetre{
-
+	int regle=0;
 	int numImg=0;
 	int imgRefBall;
 	int xBall, yBall;
@@ -56,6 +56,8 @@ public class Fenetre{
 	JButton bPause = new JButton("Pause");
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
+	JButton bSauvegarder = new JButton("Sauvegarder");
+
 	JTextField tChemin = new JTextField("Chemin");
 	JTextField txtNum = new JTextField();
 	JRadioButton plusmoins= new JRadioButton("Plus 1 moins 1");
@@ -118,6 +120,7 @@ public class Fenetre{
 		panelGroup2.add(bSelectSDr);
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
+		panelGroup2.add(bSauvegarder);
 		panelGauche.add(panelGroup,BorderLayout.CENTER);
 		panelGauche.add(panelGroup2, BorderLayout.SOUTH);
 
@@ -197,6 +200,10 @@ public class Fenetre{
 		bSelectBGa.addActionListener(listen);
 		bSelectBDr.addActionListener(listen);
 		bSelectSDr.addActionListener(listen);
+		plusmoins.addActionListener(listen);
+		plus.addActionListener(listen);
+		moins.addActionListener(listen);
+		bSauvegarder.addActionListener(listen);
 		panelImage.addMouseListener(clic);
 
 
@@ -345,6 +352,18 @@ public class Fenetre{
 
 
 		public void actionPerformed(ActionEvent e){
+			if (e.getSource()== plusmoins){
+				regle=0;
+			}
+			if (e.getSource()== plus){
+				regle=1;
+			}
+			if (e.getSource()== moins){
+				regle=2;
+			}
+			if (e.getSource()== bSauvegarder){
+				
+			}
 			if (e.getSource()== bSelectCentre){
 				c=0;
 				System.out.println("select");
