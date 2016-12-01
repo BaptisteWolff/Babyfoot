@@ -23,6 +23,10 @@ public class Events {
 	}
 
 	public void detection() {
+
+		int X[] = barycentres[0];
+		int Y[] = barycentres[1];
+
 		int nImage = 0; // numéro de l'image traitée
 		int count = 0; // nbr d'images pendant lesquelles la balle n'est pas
 						// détectée
@@ -32,8 +36,6 @@ public class Events {
 		int playerNum = 0;
 
 		while (nImage < sizeVideo) {
-			int X[] = barycentres[0];
-			int Y[] = barycentres[1];
 			int x = X[nImage];
 			int y = Y[nImage];
 
