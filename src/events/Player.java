@@ -2,8 +2,6 @@ package events;
 
 import java.util.ArrayList;
 
-import org.opencv.core.Mat;
-
 public class Player {
 	private ArrayList<Integer> goal = new ArrayList<Integer>();
 	private ArrayList<Integer> gamelle = new ArrayList<Integer>();
@@ -21,7 +19,7 @@ public class Player {
 		return gamelle;
 	}
 
-	public void addGamelle(int i, int nImage) {
+	public void addGamelle(int nImage) {
 		this.gamelle.add(nImage);
 	}
 
@@ -29,7 +27,7 @@ public class Player {
 		return out;
 	}
 
-	public void addOut(int i, int nImage) {
+	public void addOut(int nImage) {
 		this.out.add(nImage);
 	}
 
