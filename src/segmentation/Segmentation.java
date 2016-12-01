@@ -44,16 +44,16 @@ public class Segmentation {
 				if (!ballga && xg>=0)
 				{
 					condition1 = 
-							(hsvImage.get(y, xd)[0] > max(0, h - 20)) && (hsvImage.get(y, xd)[0] < min(255, h + 20))
-							&& (hsvImage.get(y, xd)[1] > max(0, s - 30)) && (hsvImage.get(y, xd)[1] < min(255, s + 40))
-							&& (hsvImage.get(y, xd)[2] > max(0, v - 70)) && (hsvImage.get(y, xd)[2] < min(255, v + 80));
+							(hsvImage.get(y, xd)[0] > max(0, h - 10)) && (hsvImage.get(y, xd)[0] < min(255, h + 5))
+							&& (hsvImage.get(y, xd)[1] > max(0, s - 60)) && (hsvImage.get(y, xd)[1] < min(255, s + 50))
+							&& (hsvImage.get(y, xd)[2] > max(0, v - 60)) && (hsvImage.get(y, xd)[2] < min(255, v + 50));
 				}
 				if (!balldr && xd<width)
 				{
 					condition2 = 
-							(hsvImage.get(y, xg)[0] > max(0, h - 20)) && (hsvImage.get(y, xg)[0] < min(255, h + 20))
-							&& (hsvImage.get(y, xg)[1] > max(0, s - 30)) && (hsvImage.get(y, xg)[1] < min(255, s + 40))
-							&& (hsvImage.get(y, xg)[2] > max(0, v - 70)) && (hsvImage.get(y, xg)[2] < min(255, v + 80));
+							(hsvImage.get(y, xg)[0] > max(0, h - 10)) && (hsvImage.get(y, xg)[0] < min(255, h + 5))
+							&& (hsvImage.get(y, xg)[1] > max(0, s - 60)) && (hsvImage.get(y, xg)[1] < min(255, s + 50))
+							&& (hsvImage.get(y, xg)[2] > max(0, v - 60)) && (hsvImage.get(y, xg)[2] < min(255, v + 50));
 				}
 				
 				if (condition1) { // si on detecte un point de la balle

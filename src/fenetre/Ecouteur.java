@@ -29,7 +29,7 @@ import segmentation.Segmentation;
 
 public class Ecouteur implements ActionListener{
 	int numImg=0;
-	int c=0;
+	int c=1;
 	LoadVideo video;
 	boolean videoSeg = false;
 	JButton bOpen = new JButton("Ouvrir");

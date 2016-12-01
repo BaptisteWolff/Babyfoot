@@ -1,12 +1,13 @@
 package fenetre;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,16 +41,18 @@ import segmentation.Segmentation;
 public class Fenetre{
 
 	int numImg=0;
+	int imgRefBall;
+	int xBall, yBall;
 	int c=1;
 	LoadVideo video;
 	JButton bOpen = new JButton("Ouvrir");
 	JButton bCommencer = new JButton("Commencer");
 	JButton bPlay = new JButton("Play");
-	JButton bselect = new JButton("centre de la balle");
-	JButton bselect2 = new JButton("ligne 1");
-	JButton bselect3 = new JButton("ligne 2");
-	JButton bselect4 = new JButton("ligne 3");
-	JButton bselect5 = new JButton("ligne 4");
+	JButton bSelectCentre = new JButton("centre de la balle");
+	JButton bSelectSGa = new JButton("ligne de sortie Gauche");
+	JButton bSelectBGa = new JButton("ligne de but Gauche");
+	JButton bSelectBDr = new JButton("ligne de sortie Droite");
+	JButton bSelectSDr = new JButton("ligne de but Droite");
 	JButton bPause = new JButton("Pause");
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
@@ -64,6 +67,8 @@ public class Fenetre{
 	JLabel lImage = new JLabel();
 	int[][] barycentres;
 	boolean videoSeg = false;
+	EcouteClic clic =new EcouteClic(panelImage);
+
 	//PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
 
@@ -107,15 +112,15 @@ public class Fenetre{
 		panelGroup.add(plusmoins);
 		panelGroup.add(plus);
 		panelGroup.add(moins);
-		panelGroup2.add(bselect2);
-		panelGroup2.add(bselect3);
-		panelGroup2.add(bselect4);
-		panelGroup2.add(bselect5);
+		panelGroup2.add(bSelectSGa);
+		panelGroup2.add(bSelectBGa);
+		panelGroup2.add(bSelectBDr);
+		panelGroup2.add(bSelectSDr);
 		panelGroup2.add(bCommencer);
-		panelGroup2.add(bselect);
+		panelGroup2.add(bSelectCentre);
 		panelGauche.add(panelGroup,BorderLayout.CENTER);
 		panelGauche.add(panelGroup2, BorderLayout.SOUTH);
-		
+
 
 
 
@@ -132,11 +137,11 @@ public class Fenetre{
 		bSuivant.setEnabled(false);
 		tChemin.setEnabled(false);
 		txtNum.setEnabled(false);
-		bselect.setEnabled(false);
-		bselect2.setEnabled(false);
-		bselect3.setEnabled(false);
-		bselect4.setEnabled(false);
-		bselect5.setEnabled(false);
+		bSelectCentre.setEnabled(false);
+		bSelectSGa.setEnabled(false);
+		bSelectBGa.setEnabled(false);
+		bSelectBDr.setEnabled(false);
+		bSelectSDr.setEnabled(false);
 		bCommencer.setEnabled(false);
 		// Definition de la taille des zones de texte
 
@@ -172,12 +177,12 @@ public class Fenetre{
 		// Affichage de la fenêtre
 		frame.setVisible(true);		
 
-		
+
 		Ecouteur listen=new Ecouteur();
 		//frame,panelImage,lImage);
 		Focus focus=new Focus(txtNum);
 		//c=listen.getC();		
-		EcouteClic clic =new EcouteClic(panelImage);
+
 
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
@@ -187,43 +192,66 @@ public class Fenetre{
 		bPause.addActionListener(listen);
 		bCommencer.addActionListener(listen);
 		txtNum.addFocusListener(focus);
-		bselect.addActionListener(listen);
-		bselect2.addActionListener(listen);
-		bselect3.addActionListener(listen);
-		bselect4.addActionListener(listen);
-		bselect5.addActionListener(listen);
+		bSelectCentre.addActionListener(listen);
+		bSelectSGa.addActionListener(listen);
+		bSelectBGa.addActionListener(listen);
+		bSelectBDr.addActionListener(listen);
+		bSelectSDr.addActionListener(listen);
 		panelImage.addMouseListener(clic);
-		
-		
+
+
 	}
 
 	// Pour gérer le play/pause, il faut créer une classe héritée de thread.
-	
 	public class EcouteClic extends MouseAdapter{
         private JPanel pan;
         public int x=0;
         public int y=0;
     	int X[]=new int[8];
     	int Y[]=new int[8];
+    	
+    	
+   
+   
         public EcouteClic(JPanel pan){
             this.pan = pan;
        
         }
         
         public void mouseClicked (MouseEvent e){
+        	Graphics g = pan.getGraphics();
+        	Graphics2D g1 = (Graphics2D) g;
+        	Graphics2D g2 = (Graphics2D) g;
+        	Graphics2D g3 = (Graphics2D) g;
+        	Graphics2D g4 = (Graphics2D) g;
+        	
+        	
         	
         	if (c==0){
-        		x = e.getX();
-                y = e.getY();
-                System.out.println("coordonnées"+e.getX()+","+e.getY());
-                Graphics g = pan.getGraphics();
-                g.drawOval(e.getX(),e.getY(), 5, 5);
-                g.dispose();
-                bCommencer.setEnabled(true);
-                c++;
-        	}
+				int x = e.getX();
+				int y = e.getY();
+				imgRefBall = numImg;
+				xBall = x;
+				yBall = y;
+				Mat img = video.getFrame(imgRefBall);
+				
+				// On va prendre les coordonnées stoquées lors du clique sur le ballon:
+				HSV hsv = new HSV(img, xBall, yBall);	//coordonnées du ballon sur l'image référence
+				
+				System.out.println(hsv.getH() + ", "+ hsv.getS() + ", "+hsv.getV());
+				
+				System.out.println("coordonnées"+e.getX()+", "+e.getY());
+				g.drawOval(e.getX(),e.getY(), 5, 5);
+				g.dispose();
+				bCommencer.setEnabled(true);
+				c++;
+			}
         	
         	if (c==10){
+        		
+        		g1.setColor(new Color(100,100,100)); 
+        		g1.setStroke(new BasicStroke(3));
+        		g1.drawLine(X[0], Y[0], X[1], Y[1]);
         		X[0]=e.getX();
         		Y[0]=e.getY();
         		c++;
@@ -231,12 +259,16 @@ public class Fenetre{
         	if (c==11){
         		X[1]=e.getX();
         		Y[1]=e.getY();
-        		Graphics g = pan.getGraphics();
-                g.drawLine(X[0], Y[0], X[1], Y[1]);
-                g.dispose();
+        		g1.setColor(Color.red); 
+        		g1.setStroke(new BasicStroke(3));
+                g1.drawLine(X[0], Y[0], X[1], Y[1]);
+                g1.dispose();
                 
         	}
         	if (c==12){
+        		g2.setColor(new Color(100,100,100)); 
+        		g2.setStroke(new BasicStroke(3));
+        		g2.drawLine(X[2], Y[2], X[3], Y[3]);
         		X[2]=e.getX();
         		Y[2]=e.getY();
         		c++;
@@ -244,12 +276,16 @@ public class Fenetre{
         	if (c==13){
         		X[3]=e.getX();
         		Y[3]=e.getY();
-        		Graphics g = pan.getGraphics();
-                g.drawLine(X[2], Y[2], X[3], Y[3]);
-                g.dispose();
+        		g2.setColor(Color.green); 
+        		g2.setStroke(new BasicStroke(3));
+                g2.drawLine(X[2], Y[2], X[3], Y[3]);
+                g2.dispose();
                 
         	}
         	if (c==14){
+        		g3.setColor(new Color(100,100,100)); 
+        		g3.setStroke(new BasicStroke(3));
+        		g3.drawLine(X[4], Y[4], X[5], Y[5]);
         		X[4]=e.getX();
         		Y[4]=e.getY();
         		c++;
@@ -257,12 +293,16 @@ public class Fenetre{
         	if (c==15){
         		X[5]=e.getX();
         		Y[5]=e.getY();
-        		Graphics g = pan.getGraphics();
-                g.drawLine(X[4], Y[4], X[5], Y[5]);
-                g.dispose();
+        		g3.setColor(Color.green); 
+        		g3.setStroke(new BasicStroke(3));
+                g3.drawLine(X[4], Y[4], X[5], Y[5]);
+                g3.dispose();
                 
         	}
         	if (c==16){
+        		g4.setColor(new Color(100,100,100)); 
+        		g4.setStroke(new BasicStroke(3));
+        		g4.drawLine(X[6], Y[6], X[7], Y[7]);
         		X[6]=e.getX();
         		Y[6]=e.getY();
         		c++;
@@ -270,9 +310,10 @@ public class Fenetre{
         	if (c==17){
         		X[7]=e.getX();
         		Y[7]=e.getY();
-        		Graphics g = pan.getGraphics();
-                g.drawLine(X[6], Y[6], X[7], Y[7]);
-                g.dispose();
+        		g4.setColor(Color.red);
+        		g4.setStroke(new BasicStroke(3));
+                g4.drawLine(X[6], Y[6], X[7], Y[7]);
+                g4.dispose();
                 
         	}
         
@@ -294,36 +335,41 @@ public class Fenetre{
     		return Y;
     	}
     }
+	
+	
+	
+	
 	public class Ecouteur implements ActionListener{
-		
+
 		PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
+
 		public void actionPerformed(ActionEvent e){
-		if (e.getSource()== bselect){
-	    		c=0;
-	    		System.out.println("select");
+			if (e.getSource()== bSelectCentre){
+				c=0;
+				System.out.println("select");
 			}
-			
-			if (e.getSource()== bselect2){
-	    		c=10;
-	    		System.out.println("select2");
-	    		bselect3.setEnabled(true);
+
+			if (e.getSource()== bSelectSGa){
+				c=10;
+				System.out.println("select2");
+				bSelectBGa.setEnabled(true);
 			}
-			if (e.getSource()== bselect3){
-	    		c=12;
-	    		System.out.println("select3");
-	    		bselect4.setEnabled(true);
+			if (e.getSource()== bSelectBGa){
+				c=12;
+				System.out.println("select3");
+				bSelectBDr.setEnabled(true);
 			}
-			if (e.getSource()== bselect4){
-	    		c=14;
-	    		System.out.println("select4");
-	    		bselect5.setEnabled(true);
+			if (e.getSource()== bSelectBDr){
+				c=14;
+				System.out.println("select4");
+				bSelectSDr.setEnabled(true);
 			}
-			if (e.getSource()== bselect5){
-	    		c=16;
-	    		System.out.println("select5");
+			if (e.getSource()== bSelectSDr){
+				c=16;
+				System.out.println("select5");
 			}
-			
+
 			if ((e.getSource()==bOpen) ){
 				try 
 				{
@@ -344,9 +390,8 @@ public class Fenetre{
 					bPrecedent.setEnabled(true);
 					bPause.setEnabled(true);
 					bSuivant.setEnabled(true);
-					bCommencer.setEnabled(true);
-					bselect.setEnabled(true);
-					bselect2.setEnabled(true);
+					bSelectCentre.setEnabled(true);
+					bSelectSGa.setEnabled(true);
 					frame.validate();
 
 				} catch (NullPointerException e3) {
@@ -394,7 +439,7 @@ public class Fenetre{
 					p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);	
 					//System.out.println("play: "+numImg);
 					p.start();				
-							
+
 				}
 			}
 
@@ -442,71 +487,90 @@ public class Fenetre{
 					txtNum.setText("N°"+nbAffiche+"/"+nbimg);
 				}
 			}
-			
-			if (e.getSource() == bCommencer) {
+
+			if (e.getSource() == bCommencer) 
+			{
 				numImg=0;
 				System.out.println("Début segmentation");
-				Mat img = Highgui.imread("Capture.png");
-				Segmentation test = new Segmentation(img, 95, 193, 173);
-				HSV hsv = new HSV(img, 1247, 593);	//coordonnées du ballon sur l'image référence
+				Segmentation test;
+				Mat img;
+				HSV hsv;
 				int h, s, v;
-				h = hsv.getH();
-				s = hsv.getS();
-				v = hsv.getV();
-
-				// test sur une vidéo
-
-				int nbImg = video.getSize();
-				// barycentres=new int[sizeVideo][sizeVideo];
-				int x = 0;
-				int y = 0;
 				
-				Mat frame2 = new Mat();
-
-				double[] data = { 0, 0, 255 };
-				double tpsSys = System.currentTimeMillis();
-				for (int i = 0; i < nbImg; i++) {
-					frame2 = video.getFrame(i);
-					System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
-					test = new Segmentation(video.getFrame(i), h, s, v);
-					x = test.getX_();
-					y = test.getY_();
-//					if (test.getX_()>video.getWidth()*0.4 && test.getX_()<video.getWidth()*0.6)
-//					{
-//						i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
-//					}
-
-					Point centre=new Point(x,y);
-					int rayon = 10;
-					Scalar color = new Scalar (0,0,255);
-					// Tracer un cercle rouge représentant le barycentre
+				try 
+				{
+					img = video.getFrame(imgRefBall);
 					
-					Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+					// On va prendre les coordonnées stoquées lors du clique sur le ballon:
+					hsv = new HSV(img, xBall, yBall);	//coordonnées du ballon sur l'image référence
 					
-									
+					h = hsv.getH();
+					s = hsv.getS();
+					v = hsv.getV();
+
+					// test sur une vidéo
+
+					int nbImg = video.getSize();
+					// barycentres=new int[sizeVideo][sizeVideo];
+					int x = 0;
+					int y = 0;
+
+					Mat frame2 = new Mat();
+
+					double[] data = { 0, 0, 255 };
+					double tpsSys = System.currentTimeMillis();
+					for (int i = 0; i < nbImg; i++) {
+						frame2 = video.getFrame(i);
+						System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
+						test = new Segmentation(video.getFrame(i), h, s, v);
+						x = test.getX_();
+						y = test.getY_();
+
+						//						if (test.getX_()>video.getWidth()*0.4 && test.getX_()<video.getWidth()*0.6)
+						//						{
+						//							i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
+						//						}
+
+						Point centre=new Point(x,y);
+						int rayon = 10;
+						Scalar color = new Scalar (0,0,255);
+						// Tracer un cercle rouge représentant le barycentre
+
+						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+					}
+
+
+					tpsSys = System.currentTimeMillis() - tpsSys;
+					System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
+					videoSeg = true;
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					int nbAffiche=numImg+1;
+					txtNum.setText("N°"+nbAffiche+"/"+nbImg);
+					frame.validate();
+
+					bCommencer.setEnabled(false);
+					bSelectCentre.setEnabled(false);
+					
+				} catch(NullPointerException x) // Si on n'a pas encore sélectionné la balle
+				{
+					System.out.println("La balle n'a pas été sélectionnée");
 				}
-				
-				
-				tpsSys = System.currentTimeMillis() - tpsSys;
-				System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
-				videoSeg = true;
-				ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-				
-				lImage.setIcon(image);
-				panelImage.add(lImage);
-				int nbAffiche=numImg+1;
-				txtNum.setText("N°"+nbAffiche+"/"+nbImg);
-				frame.validate();
-				
-				bCommencer.setEnabled(false);
-			}
+
+			} 
+
+
+
+
 		}
-		
-		
+
+
 		public void afficherImage(String chemin) {
 
 			numImg=0;
-			
+
 			if(lImage.getMaximumSize().getHeight()>0 && lImage.getMaximumSize().getWidth()>0) // Si on a déjà ouvert une video auparavant
 			{
 				video.libererVideo();	// on libère la mémoire
@@ -534,28 +598,28 @@ public class Fenetre{
 
 		}
 	}
-		// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
-		public static BufferedImage Mat2bufferedImage(Mat in, int width, int height) {
-			BufferedImage out;
-			Mat in2 = new Mat();
-			Imgproc.cvtColor(in, in2, Imgproc.COLOR_RGB2BGR);
-			byte[] data = new byte[width * height * (int) in2.elemSize()];
-			int type;
-			in2.get(0, 0, data);
+	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
+	public static BufferedImage Mat2bufferedImage(Mat in, int width, int height) {
+		BufferedImage out;
+		Mat in2 = new Mat();
+		Imgproc.cvtColor(in, in2, Imgproc.COLOR_RGB2BGR);
+		byte[] data = new byte[width * height * (int) in2.elemSize()];
+		int type;
+		in2.get(0, 0, data);
 
-			if (in2.channels() == 1)
-				type = BufferedImage.TYPE_BYTE_GRAY;
-			else
-				type = BufferedImage.TYPE_3BYTE_BGR;
+		if (in2.channels() == 1)
+			type = BufferedImage.TYPE_BYTE_GRAY;
+		else
+			type = BufferedImage.TYPE_3BYTE_BGR;
 
-			out = new BufferedImage(width, height, type);
+		out = new BufferedImage(width, height, type);
 
-			out.getRaster().setDataElements(0, 0, width, height, data);
-			return out;
+		out.getRaster().setDataElements(0, 0, width, height, data);
+		return out;
 
-		}
-	
-	
+	}
 
-	
+
+
+
 }
