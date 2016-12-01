@@ -1,0 +1,36 @@
+package events;
+
+import java.util.ArrayList;
+
+import org.opencv.core.Mat;
+
+public class Player {
+	private ArrayList<Integer> goal = new ArrayList<Integer>();
+	private ArrayList<Integer> gamelle = new ArrayList<Integer>();
+	private ArrayList<Integer> out = new ArrayList<Integer>();
+
+	public ArrayList<Integer> getGoal() {
+		return goal;
+	}
+
+	public void addGoal(int nImage) {
+		this.goal.add(nImage);
+	}
+
+	public ArrayList<Integer> getGamelle() {
+		return gamelle;
+	}
+
+	public void addGamelle(int i, int nImage) {
+		this.gamelle.add(nImage);
+	}
+
+	public ArrayList<Integer> getOut() {
+		return out;
+	}
+
+	public void addOut(int i, int nImage) {
+		this.out.add(nImage);
+	}
+
+}
