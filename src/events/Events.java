@@ -62,7 +62,7 @@ public class Events {
 				if (x < goalLinesX[4] && y < goalLinesY[5]) {
 					// ligne4 : sortie côté joueur 2
 					if (x < goalLinesX[6] && x < goalLinesX[7]) {
-						player1.addOut(nImage);
+						player2.addOut(nImage);
 						eventOut = true;
 						eventGoal = false;
 					} else { // balle dans les cages
@@ -71,7 +71,7 @@ public class Events {
 					}
 				} else if (eventGoal == true) { // La balle retourne sur le
 												// terrain
-					player1.addGamelle(nImage);
+					player2.addGamelle(nImage);
 					eventGoal = false;
 				}
 
