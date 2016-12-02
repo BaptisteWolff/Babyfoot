@@ -98,6 +98,7 @@ public class Events {
 				}
 				count++;
 			}
+			nImage++;
 		}
 	}
 }
