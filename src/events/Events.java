@@ -39,37 +39,44 @@ public class Events {
 			int x = X[nImage];
 			int y = Y[nImage];
 
-			// Balle détectée et sur le terrain
-			if (x != 0 && y != 0 && eventOut == false) {
-				// --------------- Joueur 1 ----------------------
-				// ligne1 : but cages joueur 1
-				if (x < goalLinesX[2] && y < goalLinesY[3]) {
-					// ligne0 : sortie côté joueur 1
-					if (x < goalLinesX[0] && x < goalLinesX[1]) {
-						player1.addOut(nImage);
-						eventOut = true;
+			// Balle détectée
+			if (x != 0 && y != 0) {
+				if (eventOut == false) { // Balle sur le terrain
+					// --------------- Joueur 1 ----------------------
+					// ligne1 : but cages joueur 1
+					if (x < goalLinesX[2] && y < goalLinesY[3]) {
+						// ligne0 : sortie côté joueur 1
+						if (x < goalLinesX[0] && x < goalLinesX[1]) {
+							player1.addOut(nImage);
+							eventOut = true;
+							eventGoal = false;
+						} else { // balle dans les cages
+							eventGoal = true;
+							playerNum = 1;
+						}
+					} else if (eventGoal == true) { // La balle retourne sur le
+													// terrain
+						player1.addGamelle(nImage);
 						eventGoal = false;
-					} else { // balle dans les cages
-						eventGoal = true;
-						playerNum = 1;
 					}
-				} else if (eventGoal == true) { // La balle retourne sur le
-												// terrain
-					player1.addGamelle(nImage);
-					eventGoal = false;
-				}
 
-				// --------------- Joueur 2 ----------------------
-				// ligne3 : but cages joueur 2
-				if (x < goalLinesX[4] && y < goalLinesY[5]) {
-					// ligne4 : sortie côté joueur 2
-					if (x < goalLinesX[6] && x < goalLinesX[7]) {
-						player2.addOut(nImage);
-						eventOut = true;
-						eventGoal = false;
-					} else { // balle dans les cages
-						eventGoal = true;
-						playerNum = 2;
+					// --------------- Joueur 2 ----------------------
+					// ligne3 : but cages joueur 2
+					if (x > goalLinesX[4] && y > goalLinesY[5]) {
+						// ligne4 : sortie côté joueur 2
+						if (x > goalLinesX[6] && x > goalLinesX[7]) {
+							player2.addOut(nImage);
+							eventOut = true;
+							eventGoal = false;
+						} else { // balle dans les cages
+							eventGoal = true;
+							playerNum = 2;
+						}
+					} else { // Balle en dehors du terrain
+						// Détection d'une remise en jeu après une sortie
+						if (x > goalLinesX[0] && x > goalLinesX[1] && x < goalLinesX[4] && y < goalLinesY[5]) {
+							eventOut = true;
+						}
 					}
 				} else if (eventGoal == true) { // La balle retourne sur le
 												// terrain
@@ -91,7 +98,6 @@ public class Events {
 				}
 				count++;
 			}
-			nImage++;
 		}
 	}
 }
