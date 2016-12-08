@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.opencv.core.Core;
@@ -34,6 +35,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+import events.Events;
 import loadVideo.LoadVideo;
 import segmentation.HSV;
 import segmentation.Segmentation;
@@ -51,8 +53,8 @@ public class Fenetre{
 	JButton bSelectCentre = new JButton("centre de la balle");
 	JButton bSelectSGa = new JButton("ligne de sortie Gauche");
 	JButton bSelectBGa = new JButton("ligne de but Gauche");
-	JButton bSelectBDr = new JButton("ligne de sortie Droite");
-	JButton bSelectSDr = new JButton("ligne de but Droite");
+	JButton bSelectBDr = new JButton("ligne de but Droite");
+	JButton bSelectSDr = new JButton("ligne de sortie Droite");
 	JButton bPause = new JButton("Pause");
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
@@ -67,9 +69,17 @@ public class Fenetre{
 	JFrame frame = new JFrame("Baby-Foot");
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
+	
 	int[][] barycentres;
 	boolean videoSeg = false;
 	EcouteClic clic =new EcouteClic(panelImage);
+	
+	Events events;
+	JButton bScores = new JButton("Calcul des scores"); // Scores
+	JTextArea txtScorej1 = new JTextArea("Joueur 1");
+	JTextArea txtScore1 = new JTextArea("00");
+	JTextArea txtScorej2 = new JTextArea("Joueur 2");
+	JTextArea txtScore2 = new JTextArea("00");
 
 	//PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
@@ -83,19 +93,32 @@ public class Fenetre{
 
 		JPanel panelPrincipal = new JPanel();
 		JPanel panelGauche = new JPanel();
+		JPanel panelGauche1 = new JPanel();
+		JPanel panelGauche2 = new JPanel();
+		JPanel panelGauche3 = new JPanel();
 		JPanel panelDroit = new JPanel();
 		JPanel panelLecture = new JPanel();
 		JPanel panelChemin = new JPanel();
 		JPanel panelGroup = new JPanel();
 		JPanel panelGroup2 = new JPanel();
+		JPanel panelLignes1 = new JPanel();
+		JPanel panelLignes2 = new JPanel();
+		JPanel panelGroup3 = new JPanel();
+		JPanel panelScores = new JPanel();
+
 
 		// Définition du gestionnaire de placement
 		panelPrincipal.setLayout(new BorderLayout());
 		panelGauche.setLayout(new BorderLayout());
+		panelGauche1.setLayout(new BorderLayout());
+		panelGauche2.setLayout(new BorderLayout());
+		panelGauche3.setLayout(new BorderLayout());
 		panelDroit.setLayout(new BorderLayout());
 		panelLecture.setLayout(new FlowLayout());
 		panelChemin.setLayout(new FlowLayout());
-
+		panelScores.setLayout(new FlowLayout());
+		panelGroup3.setLayout(new BorderLayout());
+		
 		//panelImage.setLayout(new CardLayout(10,10));
 
 		// Création des composants
@@ -105,47 +128,74 @@ public class Fenetre{
 		// Ajout des composants au container chemin
 		panelChemin.add(bOpen);
 		panelChemin.add(tChemin);
-
-		// Ajout des composants au container gauche
-		panelGauche.add(panelChemin, BorderLayout.NORTH);
+	
+		// Ajout des composants au container group
 		choixGam.add(plusmoins);
 		choixGam.add(plus);
 		choixGam.add(moins);
 		panelGroup.add(plusmoins);
 		panelGroup.add(plus);
 		panelGroup.add(moins);
-		panelGroup2.add(bSelectSGa);
-		panelGroup2.add(bSelectBGa);
-		panelGroup2.add(bSelectBDr);
-		panelGroup2.add(bSelectSDr);
+	
+		// Ajout des composants au container group2
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
 		panelGroup2.add(bSauvegarder);
-		panelGauche.add(panelGroup,BorderLayout.CENTER);
-		panelGauche.add(panelGroup2, BorderLayout.SOUTH);
 
-
-
-
+		// Ajout des composants au container Lignes1
+		
+		panelLignes1.add(bSelectSGa);
+		panelLignes1.add(bSelectBGa);
+		
+		// Ajout des composants au container Lignes2
+		
+		panelLignes2.add(bSelectBDr);
+		panelLignes2.add(bSelectSDr);
+		
+		// Ajout des composants au container Scores
+				
+		panelScores.add(bScores);
+		panelScores.add(txtScorej1);
+		panelScores.add(txtScore1);
+		panelScores.add(txtScorej2);
+		panelScores.add(txtScore2);
+		
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		// Ajout des composants au container Gauche1
+		panelGauche1.add(panelChemin,BorderLayout.NORTH);
+		panelGauche1.add(panelGroup,BorderLayout.CENTER);
+		panelGauche1.add(panelGroup2,BorderLayout.SOUTH);
+		
+		// Ajout des composants au container Gauche2
+		panelGauche2.add(panelLignes1,BorderLayout.NORTH);
+		panelGauche2.add(panelLignes2,BorderLayout.CENTER);
+		
+		// Ajout des composants au container Gauche2
+		panelGauche3.add(panelScores,BorderLayout.NORTH);
+		
+		// Ajout des composants au container Gauche
+		panelGauche.add(panelGauche1,BorderLayout.NORTH);
+		panelGauche.add(panelGauche3,BorderLayout.CENTER);
+		panelGauche.add(panelGauche2,BorderLayout.SOUTH);
+		
 		// Ajout des composants au container Lecture
 		panelLecture.add(txtNum);
 		panelLecture.add(bPrecedent);
 		panelLecture.add(bPlay);
 		panelLecture.add(bPause);		
 		panelLecture.add(bSuivant);
-		// Boutons play non disponible au début
-		bPlay.setEnabled(false);
-		bPrecedent.setEnabled(false);
-		bPause.setEnabled(false);
-		bSuivant.setEnabled(false);
-		tChemin.setEnabled(false);
-		txtNum.setEnabled(false);
-		bSelectCentre.setEnabled(false);
-		bSelectSGa.setEnabled(false);
-		bSelectBGa.setEnabled(false);
-		bSelectBDr.setEnabled(false);
-		bSelectSDr.setEnabled(false);
-		bCommencer.setEnabled(false);
+		
+		
+	
+		
 		// Definition de la taille des zones de texte
 
 
@@ -182,11 +232,27 @@ public class Fenetre{
 
 
 		Ecouteur listen=new Ecouteur();
-		//frame,panelImage,lImage);
 		Focus focus=new Focus(txtNum);
-		//c=listen.getC();		
+	
 
-
+		// Boutons play non disponible au début
+		bPlay.setEnabled(false);
+		bPrecedent.setEnabled(false);
+		bPause.setEnabled(false);
+		bSuivant.setEnabled(false);
+		tChemin.setEnabled(false);
+		txtNum.setEnabled(false);
+		bSelectCentre.setEnabled(false);
+		bSelectSGa.setEnabled(false);
+		bSelectBGa.setEnabled(false);
+		bSelectBDr.setEnabled(false);
+		bSelectSDr.setEnabled(false);
+		bCommencer.setEnabled(false);
+		txtScorej1.setEditable(false);
+		txtScorej2.setEditable(false);
+		txtScore1.setEditable(false);
+		txtScore2.setEditable(false);
+		
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
 		bPrecedent.addActionListener(listen);
@@ -204,6 +270,7 @@ public class Fenetre{
 		plus.addActionListener(listen);
 		moins.addActionListener(listen);
 		bSauvegarder.addActionListener(listen);
+		bScores.addActionListener(listen);
 		panelImage.addMouseListener(clic);
 
 
@@ -352,6 +419,12 @@ public class Fenetre{
 
 
 		public void actionPerformed(ActionEvent e){
+			if (e.getSource() == bScores) {
+				System.out.println("calculScores");
+				events = new Events(barycentres, video.getSize(), clic.getX(), clic.getY());
+				events.detection();
+				System.out.println("joueur 1 : "+events.getPlayer1());
+			}
 			if (e.getSource()== plusmoins){
 				regle=0;
 			}
@@ -389,7 +462,7 @@ public class Fenetre{
 				System.out.println("select5");
 			}
 
-			if ((e.getSource()==bOpen) ){
+			if ((e.getSource()== bOpen) ){
 				try 
 				{
 					// Si FenetreOuvrir() renvoie un fichier vidéo
