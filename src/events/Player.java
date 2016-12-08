@@ -30,5 +30,16 @@ public class Player {
 	public void addOut(int nImage) {
 		this.out.add(nImage);
 	}
-
+	
+	public int getNbGoal(){
+		return goal.size();
+	}
+	
+	public int getNbGamelle(){
+		return gamelle.size();
+	}
+	
+	public int getNbOut(){
+		return out.size();
+	}
 }

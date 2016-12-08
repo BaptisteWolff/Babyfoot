@@ -1,11 +1,11 @@
 package events;
 
 public class Events {
-	int[][] barycentres;
-	int sizeVideo;
+	int[][] barycentres = { { 0 }, { 0 } };
+	int sizeVideo = 0;
 	Player player1 = new Player();
 	Player player2 = new Player();
-	int[] goalLinesX, goalLinesY;
+	int[] goalLinesX = { 0 }, goalLinesY = { 0 };
 
 	public Events(int[][] barycentres, int sizeVideo, int goalLinesX[], int goalLinesY[]) {
 		super();
@@ -22,7 +22,11 @@ public class Events {
 	public Player getPlayer2() {
 		return player2;
 	}
-	
+
+	public void setSizeVideo(int sizeVideo) {
+		this.sizeVideo = sizeVideo;
+	}
+
 	public void detection() {
 
 		int X[] = barycentres[0];
@@ -44,8 +48,15 @@ public class Events {
 			if (x != 0 && y != 0) {
 				if (eventOut == false) { // Balle sur le terrain
 					// --------------- Joueur 1 ----------------------
-					if (x < goalLinesX[2] && x < goalLinesX[3]) { // ligne1 : but cages joueur 1
-						if (x < goalLinesX[0] && x < goalLinesX[1]) { // ligne0 : sortie côté joueur 1
+					if (x < goalLinesX[2] && x < goalLinesX[3]) { // ligne1 :
+																	// but cages
+																	// joueur 1
+						if (x < goalLinesX[0] && x < goalLinesX[1]) { // ligne0
+																		// :
+																		// sortie
+																		// côté
+																		// joueur
+																		// 1
 							player1.addOut(nImage);
 							eventOut = true;
 							eventGoal = false;
@@ -61,8 +72,15 @@ public class Events {
 					}
 
 					// --------------- Joueur 2 ----------------------
-					if (x > goalLinesX[4] && x > goalLinesX[5]) { // ligne3 : but cages joueur 2
-						if (x > goalLinesX[6] && x > goalLinesX[7]) { // ligne4 : sortie côté joueur 2
+					if (x > goalLinesX[4] && x > goalLinesX[5]) { // ligne3 :
+																	// but cages
+																	// joueur 2
+						if (x > goalLinesX[6] && x > goalLinesX[7]) { // ligne4
+																		// :
+																		// sortie
+																		// côté
+																		// joueur
+																		// 2
 							player2.addOut(nImage);
 							eventOut = true;
 							eventGoal = false;
@@ -85,7 +103,8 @@ public class Events {
 
 				count = 0;
 			} else { // Balle non détectée ou en dehors du terrain
-				if (eventOut == false && eventGoal == true && count >= 12) { // Goal détecté
+				if (eventOut == false && eventGoal == true && count >= 12) { // Goal
+																				// détecté
 					if (playerNum == 1) {
 						player1.addGoal(nImage - count);
 					}
