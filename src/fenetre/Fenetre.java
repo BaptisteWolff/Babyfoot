@@ -36,7 +36,9 @@ import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
 import events.Events;
+import events.Player;
 import loadVideo.LoadVideo;
+import sauvegarde.Sauvegarde;
 import segmentation.HSV;
 import segmentation.Segmentation;
 
@@ -46,6 +48,8 @@ public class Fenetre{
 	int imgRefBall;
 	int xBall, yBall;
 	int c=1;
+	int X[]=new int[8];
+	int Y[]=new int[8];
 	LoadVideo video;
 	JButton bOpen = new JButton("Ouvrir");
 	JButton bCommencer = new JButton("Commencer");
@@ -435,7 +439,11 @@ public class Fenetre{
 				regle=2;
 			}
 			if (e.getSource()== bSauvegarder){
-				
+				int nbimg=video.getSize();
+				Events e1 = new Events(barycentres, nbimg, X, Y);
+				Player p1=e1.getPlayer1();
+				Player p2=e1.getPlayer2();
+				Sauvegarde.write(p1,p2,regle);
 			}
 			if (e.getSource()== bSelectCentre){
 				c=0;
