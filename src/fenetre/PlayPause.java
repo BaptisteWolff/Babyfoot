@@ -8,7 +8,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import loadVideo.LoadVideo;
@@ -21,9 +24,11 @@ public class PlayPause extends Thread {
 	JPanel panelImage = new JPanel();
 	JLabel lImage = new JLabel();
 	JTextField txtNum = new JTextField();
+	boolean segmentation = false;
+	int[][] barycentres = { { 0 }, { 0 } };
 
-	public PlayPause(int numImg, LoadVideo video, JFrame frame,
-			JPanel panelImage, JLabel lImage, JTextField txtNum) {
+	public PlayPause(int numImg, LoadVideo video, JFrame frame, JPanel panelImage, JLabel lImage, JTextField txtNum,
+			boolean segmentation, int[][] barycentres) {
 		super();
 		this.numImg = numImg;
 		this.video = video;
@@ -31,6 +36,8 @@ public class PlayPause extends Thread {
 		this.panelImage = panelImage;
 		this.lImage = lImage;
 		this.txtNum = txtNum;
+		this.barycentres = barycentres;
+		this.segmentation = segmentation;
 	}
 
 	public void arret() {
@@ -39,38 +46,52 @@ public class PlayPause extends Thread {
 
 	@Override
 	public void run() {
-			int nbimg = video.getSize();
-			int i = numImg;
-			int nbAffiche;
-			long skipTicks = 1000 / 60; // 60 fps
+		int nbimg = video.getSize();
+		int i = numImg;
+		int nbAffiche;
+		long skipTicks = 1000 / 60; // 60 fps
 
-			long nextFrameTick = System.currentTimeMillis();
-			int loops;
-			while (i < nbimg && running) {
-				numImg = i;
-				loops = 0;
-				nextFrameTick = System.currentTimeMillis();
-				long tot = nextFrameTick + skipTicks;
-				while (System.currentTimeMillis() < tot && loops < 10000 && running) {
-					
-					ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					frame.validate();
-					loops++;
-					nbAffiche = numImg + 1;
-					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-				}
-				numImg=i;
-				i++;
-				
+		long nextFrameTick = System.currentTimeMillis();
+		int loops;
+		while (i < nbimg && running) {
+			numImg = i;
+			loops = 0;
+			nextFrameTick = System.currentTimeMillis();
+			long tot = nextFrameTick + skipTicks;
+			Mat frame2 = new Mat();
+			frame2 = video.getFrame(numImg);
+			if (segmentation == true) {
+				int x = barycentres[0][numImg];
+				int y = barycentres[1][numImg];
+				Point centre = new Point(x, y);
+				int rayon = 10;
+				Scalar color = new Scalar(0, 0, 255);
+				// Tracer un cercle rouge représentant le barycentre
+
+				Core.circle(frame2, centre, rayon, color, -1); // -1:
+																// rempli
+																// le
+																// cercle
 			}
-			if (i==nbimg)
-			{
-				running=false;
+			ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
+			while (System.currentTimeMillis() < tot && loops < 10000 && running) {
+
+				lImage.setIcon(image);
+				panelImage.add(lImage);
+				panelImage.repaint();
+				frame.validate();
+				loops++;
+				nbAffiche = numImg + 1;
+				txtNum.setText("N°" + nbAffiche + "/" + nbimg);
 			}
-						
+			numImg = i;
+			i++;
+
+		}
+		if (i == nbimg) {
+			running = false;
+		}
+
 	}
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
 

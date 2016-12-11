@@ -43,6 +43,7 @@ import segmentation.HSV;
 import segmentation.Segmentation;
 
 public class Fenetre {
+	boolean segmentation = false;
 	int regle = 0;
 	int numImg = 0;
 	int imgRefBall;
@@ -428,7 +429,7 @@ public class Fenetre {
 
 	public class Ecouteur implements ActionListener {
 
-		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum);
+		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres);
 
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == bScores) { // ---- Scores ----
@@ -511,6 +512,7 @@ public class Fenetre {
 					bSelectCentre.setEnabled(true);
 					bSelectSGa.setEnabled(true);
 					frame.validate();
+					segmentation = false;
 
 				} catch (NullPointerException e3) {
 					// Si le fichier n'est pas une video ou que l'utilisateur
@@ -523,9 +525,21 @@ public class Fenetre {
 				int nbimg = video.getSize();
 				if (numImg > 0) {
 					numImg--;
+					Mat frame2 = video.getFrame(numImg);
+					if (segmentation == true) {
+						int x = barycentres[0][numImg];
+						int y = barycentres[1][numImg];
+						Point centre = new Point(x, y);
+						int rayon = 10;
+						Scalar color = new Scalar(0, 0, 255);
+						// Tracer un cercle rouge représentant le barycentre
 
-					ImageIcon image = new ImageIcon(
-							Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
+					}
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 					lImage.setIcon(image);
 					panelImage.add(lImage);
 					panelImage.repaint();
@@ -540,9 +554,22 @@ public class Fenetre {
 				int nbimg = video.getSize();
 				if (numImg < nbimg - 1) {
 					numImg++;
+					Mat frame2 = new Mat();
+					frame2 = video.getFrame(numImg);
+					if (segmentation == true) {
+						int x = barycentres[0][numImg];
+						int y = barycentres[1][numImg];
+						Point centre = new Point(x, y);
+						int rayon = 10;
+						Scalar color = new Scalar(0, 0, 255);
+						// Tracer un cercle rouge représentant le barycentre
 
-					ImageIcon image = new ImageIcon(
-							Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
+					}
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 					lImage.setIcon(image);
 					panelImage.add(lImage);
 					panelImage.repaint();
@@ -556,7 +583,7 @@ public class Fenetre {
 
 			if (e.getSource() == bPlay) {
 				if (!p.isAlive()) {
-					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum);
+					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres);
 					// System.out.println("play: "+numImg);
 					p.start();
 
@@ -588,9 +615,21 @@ public class Fenetre {
 
 				if (numEntre > 0 && numEntre <= nbimg) {
 					numImg = numEntre - 1;
+					Mat frame2 = video.getFrame(numImg);
+					if (segmentation == true) {
+						int x = barycentres[0][numImg];
+						int y = barycentres[1][numImg];
+						Point centre = new Point(x, y);
+						int rayon = 10;
+						Scalar color = new Scalar(0, 0, 255);
+						// Tracer un cercle rouge représentant le barycentre
 
-					ImageIcon image = new ImageIcon(
-							Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
+					}
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 
 					lImage.setIcon(image);
 
@@ -630,24 +669,18 @@ public class Fenetre {
 					// test sur une vidéo
 
 					int nbImg = video.getSize();
-					// barycentres=new int[sizeVideo][sizeVideo];
-					int x = 0;
-					int y = 0;
+
 					int X[] = new int[nbImg];
 					int Y[] = new int[nbImg];
 
-					Mat frame2 = new Mat();
-
-					double[] data = { 0, 0, 255 };
+					video.startSeg(); // Début de la segmentation
 					double tpsSys = System.currentTimeMillis();
 					for (int i = 0; i < nbImg; i++) {
-						frame2 = video.getFrame(i);
+
 						System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
-						test = new Segmentation(video.getFrame(i), h, s, v);
-						x = test.getX_();
-						y = test.getY_();
-						X[i] = x;
-						Y[i] = y;
+						test = new Segmentation(video.getFrameForSeg(i), h, s, v);
+						X[i] = test.getX_();
+						Y[i] = test.getY_();
 
 						// if (test.getX_()>video.getWidth()*0.4 &&
 						// test.getX_()<video.getWidth()*0.6)
@@ -656,16 +689,9 @@ public class Fenetre {
 						// on saute 1 image sur 2 (zone non interessante)
 						// }
 
-						Point centre = new Point(x, y);
-						int rayon = 10;
-						Scalar color = new Scalar(0, 0, 255);
-						// Tracer un cercle rouge représentant le barycentre
-
-						Core.circle(frame2, centre, rayon, color, -1); // -1:
-																		// rempli
-																		// le
-																		// cercle
 					}
+
+					video.endSeg(); // Fin de la segmentation
 					barycentres[0] = X;
 					barycentres[1] = Y;
 					tpsSys = System.currentTimeMillis() - tpsSys;
@@ -682,6 +708,8 @@ public class Fenetre {
 
 					bCommencer.setEnabled(false);
 					bSelectCentre.setEnabled(false);
+
+					segmentation = true;
 
 				} catch (NullPointerException x) // Si on n'a pas encore
 													// sélectionné la balle
@@ -706,7 +734,7 @@ public class Fenetre {
 																									// video
 																									// auparavant
 			{
-				video.libererVideo(); // on libère la mémoire
+				// video.libererVideo(); // on libère la mémoire
 				lImage.removeAll();
 				System.out.println("video deleted");
 			}
@@ -715,7 +743,7 @@ public class Fenetre {
 
 			if (cap.isOpened()) {
 				System.out.println("Success to open file");
-				video = new LoadVideo(cap);
+				video = new LoadVideo(chemin);
 				ImageIcon image = new ImageIcon(
 						Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
 				// Image img =Mat2bufferedImage(video.getFrame(numImg),

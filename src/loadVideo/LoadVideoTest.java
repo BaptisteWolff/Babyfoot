@@ -1,12 +1,11 @@
 package loadVideo;
 
-import org.opencv.highgui.*;
-
 public class LoadVideoTest {
 
 	public static void main(String[] args) {
 		System.loadLibrary("opencv_java2413");
-		VideoCapture cap = new VideoCapture("C:/Users/louis/Documents/S2ButGaucheDemi.MP4");
+		String name = "D:/Users/Baptiste/Pictures/BigMaccadam/S2ButDroite.MP4";
+		/* VideoCapture cap = new VideoCapture("D:/Users/Baptiste/Pictures/BigMaccadam/S2ButDroite.MP4");
 		System.out.println(cap.isOpened());
 		if (cap.isOpened()) {
 			System.out.println("Success");
@@ -16,7 +15,10 @@ public class LoadVideoTest {
 		} else {
 			System.out.println("Failure");
 
-		}
+		}*/
+		LoadVideo video = new LoadVideo(name);
+		video.displayVideo(120,0);
+		video.displayFrame(299);
 
 	}
 }
