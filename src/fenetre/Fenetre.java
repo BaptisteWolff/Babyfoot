@@ -499,6 +499,16 @@ public class Fenetre {
 																	// un chemin
 																	// exploitable
 					// System.out.println(replacedStr);
+					// reinitialisation des scores
+					// ---- Joueur1 ----
+					txtScore1Goal.setText("0");
+					txtScore1Gamelle.setText("0");
+					txtScore1Out.setText("0");
+					// ---- Joueur2 ----
+					txtScore2Goal.setText("0");
+					txtScore2Gamelle.setText("0");
+					txtScore2Out.setText("0");
+					
 					afficherImage(replacedStr);
 					int nbimg = video.getSize();
 					int nbAffiche = numImg + 1;

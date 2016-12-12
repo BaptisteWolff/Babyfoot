@@ -91,7 +91,7 @@ public class PlayPause extends Thread {
 		if (i == nbimg) {
 			running = false;
 		}
-
+		
 	}
 	// http://www.codeproject.com/Tips/752511/How-to-Convert-Mat-to-BufferedImage-Vice-Versa
 

@@ -61,7 +61,7 @@ public class Events {
 							eventOut = true;
 							eventGoal = false;
 							player1.addOut(count);
-						} else { // balle dans les cages
+						} else { 									// balle dans les cages
 							eventGoal = true;
 							playerNum = 1;
 						}
