@@ -1,10 +1,6 @@
 package segmentation;
 
-import org.opencv.core.Core;
-
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 import static java.lang.Math.*;

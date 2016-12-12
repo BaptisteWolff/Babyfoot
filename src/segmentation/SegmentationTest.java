@@ -1,29 +1,25 @@
 package segmentation;
 
-import java.util.ArrayList;
-
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
-
 import loadVideo.LoadVideo;
 
 public class SegmentationTest {
 	public static void main(String[] args) {
 		System.loadLibrary("opencv_java2413");
 		// Test sur une image
-
-		Mat img=Highgui.imread("Capture.png");
+		String cheminVid = "D:/Users/Baptiste/Pictures/BigMaccadam/S2ButDroite.MP4";
+		Mat img=Highgui.imread("D:/Users/Baptiste/Pictures/BigMaccadam/testImage1.png");
 		Segmentation test;
-		HSV hsv=new HSV(img, 1247, 593);
+		// HSV hsv=new HSV(img, 1247, 593);
+		HSV hsv=new HSV(img, 842, 354);
 		int h,s,v;
 		h=hsv.getH();
 		s=hsv.getS();
 		v=hsv.getV();
 		
-		// test sur une vidéo
-		VideoCapture cap = new VideoCapture("S3GammelleDroite.MP4");
-		LoadVideo video = new LoadVideo(cap);
+		LoadVideo video = new LoadVideo(cheminVid);
+		int detection = 0;
 		
 		int sizeVideo = video.getSize();
 		int X[]=new int[sizeVideo];
@@ -38,11 +34,14 @@ public class SegmentationTest {
 //			{
 //				i++;	// Si la balle se trouve au milieu de l'image, on saute 1 image sur 2 (zone non interessante)
 //			}
+			if (X[i] != 0 && Y[i] != 0){
+				detection++;
+			}
 		}
 		int[][] barycentres={X,Y};
 		tpsSys = System.currentTimeMillis() - tpsSys;
-		System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
-		video.displayVideoBarycentres(30, 0, barycentres);
+		System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms\nBalle détectée sur "+ detection + "/193 images");
+		video.displayVideoBarycentres(24, 0, barycentres);
 
 	}
 }

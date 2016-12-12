@@ -1,6 +1,9 @@
 package loadVideo;
 
 import java.awt.image.BufferedImage;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +25,7 @@ public class LoadVideo {
 	int nLastFrame = -1;
 	Mat currentFrame = new Mat();
 	Mat lastFrame = new Mat();
-	boolean lastFrameLoaded = true;
+	AtomicInteger lastFrameLoaded = new AtomicInteger();
 	// private ArrayList<Mat> frames_ = new ArrayList<Mat>();
 
 	// http://stackoverflow.com/questions/17401852/open-video-file-with-opencv-java
@@ -159,18 +162,28 @@ public class LoadVideo {
 		}
 
 		public void run() {
+			cap = new VideoCapture(videoName);
 			int i = 0;
 			while (i < numFrame - 2) {
 				cap.grab();
 				i++;
 			}
 			cap.read(lastFrame);
-			lastFrameLoaded = true;
+			lastFrameLoaded.set(0);
 		}
 	}
 	/* RETOURNE UNE frame DE LA VIDEO */
 
 	public Mat getFrame(int numFrame) {
+		while (lastFrameLoaded.get() != 0) { // On vérifie que le thread findLastFrame n'est pas en cours d'éxécution.
+			try {
+				TimeUnit.MILLISECONDS.sleep(10);
+			} catch (InterruptedException e) {
+				System.out.println("waitAborted");// TODO Auto-generated
+													// catch block
+				e.printStackTrace();
+			}
+		}
 		int diff = numFrame - nLastFrame;
 		if (diff == 0) {
 			return currentFrame;
@@ -178,37 +191,31 @@ public class LoadVideo {
 		if (diff == 1) {
 			currentFrame.copyTo(lastFrame);
 			cap.read(currentFrame);
-		} else {
-			if (diff > 1) {
-				while (diff > 2) {
-					cap.grab();
-					diff--;
-				}
-				cap.read(lastFrame);
-				cap.read(currentFrame);
-			} else {
-				if (diff < 1) {
-					cap = new VideoCapture(videoName);
-					int i = 0;
-					while (i < numFrame - 2) {
-						cap.grab();
-						i++;
-					}
-					cap.read(lastFrame);
-					cap.read(currentFrame);
-				} else { // Diff = -1
-					int i = 0;
-					while (lastFrameLoaded == false) {
-						i++;
-						System.out.println(i);
-					}
-					currentFrame = lastFrame;
-					cap = new VideoCapture(videoName);
-					lastFrameLoaded = false;
-					FindLastFrame t = new FindLastFrame(numFrame);
-					t.start();
-				}
+		}
+		if (diff > 1) {
+			while (diff > 2) {
+				cap.grab();
+				diff--;
 			}
+			cap.read(lastFrame);
+			cap.read(currentFrame);
+		}
+		if (diff < 1) {
+			cap = new VideoCapture(videoName);
+			int i = 0;
+			while (i < numFrame - 2) {
+				cap.grab();
+				i++;
+			}
+			cap.read(lastFrame);
+			cap.read(currentFrame);
+		}
+		if (diff == -1) {
+			lastFrameLoaded.set(1);
+			lastFrame.copyTo(currentFrame);
+			FindLastFrame t = new FindLastFrame(numFrame);
+			t.start();
+
 		}
 		nLastFrame = numFrame;
 		return currentFrame;
