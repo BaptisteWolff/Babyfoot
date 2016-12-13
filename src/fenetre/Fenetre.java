@@ -98,6 +98,7 @@ public class Fenetre {
 	JTextArea txtScore2Goal = new JTextArea("0");
 	JTextArea txtScore2Gamelle = new JTextArea("0");
 	JTextArea txtScore2Out = new JTextArea("0");
+	
 
 	// PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
@@ -159,7 +160,7 @@ public class Fenetre {
 		panelGroup.add(plusmoins);
 		panelGroup.add(plus);
 		panelGroup.add(moins);
-
+		plusmoins.setSelected(true);
 		// Ajout des composants au container group2
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
@@ -269,11 +270,24 @@ public class Fenetre {
 		bSelectBDr.setEnabled(false);
 		bSelectSDr.setEnabled(false);
 		bCommencer.setEnabled(false);
+		txtScoreGoalName1.setEditable(false);
+		txtScoreGamelleName1.setEditable(false);
+		txtScoreOutName1.setEditable(false);
 		txtScorej1.setEditable(false);
-		txtScorej2.setEditable(false);
 		txtScore1.setEditable(false);
+		txtScore1Goal.setEditable(false);
+		txtScore1Gamelle.setEditable(false);
+		txtScore1Out.setEditable(false);
+		// ---- Joueur 2 ----
+		txtScoreGoalName2.setEditable(false);
+		txtScoreGamelleName2.setEditable(false);
+		txtScoreOutName2.setEditable(false);
+		txtScorej2.setEditable(false);
 		txtScore2.setEditable(false);
-
+		txtScore2Goal.setEditable(false);
+		txtScore2Gamelle.setEditable(false);
+		txtScore2Out.setEditable(false);
+		
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
 		bPrecedent.addActionListener(listen);
@@ -444,7 +458,29 @@ public class Fenetre {
 				txtScore2Goal.setText("" + events.getPlayer2().getNbGoal());
 				txtScore2Gamelle.setText("" + events.getPlayer2().getNbGamelle());
 				txtScore2Out.setText("" + events.getPlayer2().getNbOut());
-
+				// ---- Scores totaux ----
+				int gamJ1;
+				int gamJ2;
+				switch (regle)
+				{
+				case 1: 	// regle +1
+					gamJ1=events.getPlayer1().getNbGamelle();
+					gamJ2=events.getPlayer2().getNbGamelle();
+					break;
+				case 2:		// regle -1
+					gamJ1=-(events.getPlayer2().getNbGamelle());
+					gamJ2=-(events.getPlayer1().getNbGamelle());
+					break;
+				default:	// regle +1/-1 (regle=0 ou regle par défaut)
+					gamJ1=-(events.getPlayer2().getNbGamelle())+events.getPlayer1().getNbGamelle();
+					gamJ2=-(events.getPlayer1().getNbGamelle())+events.getPlayer2().getNbGamelle();
+					
+				}
+				int scoreJ1=events.getPlayer1().getNbGoal()+gamJ1;
+				int scoreJ2=events.getPlayer2().getNbGoal()+gamJ2;
+				
+				txtScore1.setText(""+scoreJ1);
+				txtScore2.setText(""+scoreJ2);
 			}
 
 			if (e.getSource() == plusmoins) {
@@ -504,10 +540,12 @@ public class Fenetre {
 					txtScore1Goal.setText("0");
 					txtScore1Gamelle.setText("0");
 					txtScore1Out.setText("0");
+					txtScore1.setText("0");
 					// ---- Joueur2 ----
 					txtScore2Goal.setText("0");
 					txtScore2Gamelle.setText("0");
 					txtScore2Out.setText("0");
+					txtScore2.setText("0");
 					
 					afficherImage(replacedStr);
 					int nbimg = video.getSize();
@@ -689,8 +727,15 @@ public class Fenetre {
 
 						System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
 						test = new Segmentation(video.getFrameForSeg(i), h, s, v);
-						X[i] = test.getX_();
-						Y[i] = test.getY_();
+						if (test.getY_()>10 && test.getY_()<video.getHeight()-10){
+							X[i] = test.getX_();
+							Y[i] = test.getY_();
+						} else
+						{
+							X[i]=-10;
+							Y[i]=-10;
+						}
+						
 
 						// if (test.getX_()>video.getWidth()*0.4 &&
 						// test.getX_()<video.getWidth()*0.6)

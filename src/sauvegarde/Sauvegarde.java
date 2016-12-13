@@ -49,8 +49,8 @@ public class Sauvegarde {
 			
 		
 		}else  {//regle plus 1 moins 1
-			score1=nbGoal1+nbGam1-nbGam2-1;
-			score2=nbGoal2+nbGam2-nbGam1-1;
+			score1=nbGoal1+nbGam1-nbGam2;
+			score2=nbGoal2+nbGam2-nbGam1;
 		}
 		
 		System.out.println("nbgam1  "+nbGam1);

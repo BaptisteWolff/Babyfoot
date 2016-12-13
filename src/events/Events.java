@@ -43,48 +43,40 @@ public class Events {
 		while (nImage < sizeVideo) {
 			int x = X[nImage];
 			int y = Y[nImage];
-
+			
 			// Balle détectée
-			if (x != 0 && y != 0) {
+			if (x > 0 && y > 0) {
 				if (eventOut == false) { // Balle sur le terrain
 					// --------------- Joueur 1 ----------------------
-					if (x < goalLinesX[2] && x < goalLinesX[3]) { // ligne1 :
-																	// but cages
-																	// joueur 1
-						if (x < goalLinesX[0] && x < goalLinesX[1]) { // ligne0
-																		// :
-																		// sortie
-																		// côté
-																		// joueur
-																		// 1
+					int xMoyGoal1=(goalLinesX[2] + goalLinesX[3])/2;
+					
+					if (x < xMoyGoal1) { // ligne1 : but cages joueur 1
+						int xMoyOut1=(goalLinesX[0] + goalLinesX[1])/2;
+						
+						if (x < xMoyOut1) { // ligne0 : sortie côté joueur 1
 							player1.addOut(nImage);
 							eventOut = true;
 							eventGoal = false;
-							player1.addOut(count);
+							//player1.addOut(count);
 						} else { 									// balle dans les cages
 							eventGoal = true;
 							playerNum = 1;
 						}
-					} else if (eventGoal == true) { // La balle retourne sur le
-													// terrain
+					} else if (eventGoal == true && playerNum==1) { // La balle retourne sur le terrain
 						player1.addGamelle(nImage - count);
 						eventGoal = false;
 					}
 
 					// --------------- Joueur 2 ----------------------
-					if (x > goalLinesX[4] && x > goalLinesX[5]) { // ligne3 :
-																	// but cages
-																	// joueur 2
-						if (x > goalLinesX[6] && x > goalLinesX[7]) { // ligne4
-																		// :
-																		// sortie
-																		// côté
-																		// joueur
-																		// 2
+					int xMoyGoal2=(goalLinesX[4] + goalLinesX[5])/2;
+					if (x > xMoyGoal2) { // ligne3 : but cages joueur 2
+						int xMoyOut2=(goalLinesX[6] + goalLinesX[7])/2;
+						
+						if (x > xMoyOut2) { // ligne4  :  sortie  côté  joueur  2
 							player2.addOut(nImage);
 							eventOut = true;
 							eventGoal = false;
-							player2.addOut(count);
+							//player2.addOut(count);
 						} else { // balle dans les cages
 							eventGoal = true;
 							playerNum = 2;
@@ -95,7 +87,7 @@ public class Events {
 							eventOut = false;
 						}
 					}
-				} else if (eventGoal == true) { // La balle retourne sur le
+				} else if (eventGoal == true && playerNum==2) { // La balle retourne sur le
 												// terrain
 					player2.addGamelle(nImage - count);
 					eventGoal = false;
