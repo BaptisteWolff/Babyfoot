@@ -270,14 +270,17 @@ public class Fenetre {
 		bSelectBDr.setEnabled(false);
 		bSelectSDr.setEnabled(false);
 		bCommencer.setEnabled(false);
-		txtScoreGoalName1.setEditable(false);
-		txtScoreGamelleName1.setEditable(false);
-		txtScoreOutName1.setEditable(false);
-		txtScorej1.setEditable(false);
-		txtScore1.setEditable(false);
-		txtScore1Goal.setEditable(false);
-		txtScore1Gamelle.setEditable(false);
-		txtScore1Out.setEditable(false);
+		bSauvegarder.setEnabled(false);
+		bScores.setEnabled(false);
+		// ---- Joueur 1 ----
+		txtScoreGoalName1.setEditable(false);		// texte "Buts"
+		txtScoreGamelleName1.setEditable(false);	// texte "Gamelles"
+		txtScoreOutName1.setEditable(false);		// texte "Sorties"
+		txtScorej1.setEditable(false);				// texte "Joueur 1"
+		txtScore1.setEditable(false);				// score J1
+		txtScore1Goal.setEditable(false);			// nb de buts
+		txtScore1Gamelle.setEditable(false);		// nb de gamelles
+		txtScore1Out.setEditable(false);			// nb de sorties
 		// ---- Joueur 2 ----
 		txtScoreGoalName2.setEditable(false);
 		txtScoreGamelleName2.setEditable(false);
@@ -481,6 +484,8 @@ public class Fenetre {
 				
 				txtScore1.setText(""+scoreJ1);
 				txtScore2.setText(""+scoreJ2);
+
+				bSauvegarder.setEnabled(true);
 			}
 
 			if (e.getSource() == plusmoins) {
@@ -522,6 +527,7 @@ public class Fenetre {
 			if (e.getSource() == bSelectSDr) {
 				c = 16;
 				System.out.println("select5");
+				bScores.setEnabled(true);
 			}
 
 			if ((e.getSource() == bOpen)) {
@@ -574,6 +580,14 @@ public class Fenetre {
 				if (numImg > 0) {
 					numImg--;
 					Mat frame2 = video.getFrame(numImg);
+					
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					panelImage.repaint();
+					int nbAffiche = numImg + 1;
+					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
+					
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
 						int y = barycentres[1][numImg];
@@ -582,18 +596,8 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1:
-																		// rempli
-																		// le
-																		// cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
 					}
-					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					int nbAffiche = numImg + 1;
-					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-
 					frame.validate();
 
 				}
@@ -604,6 +608,14 @@ public class Fenetre {
 					numImg++;
 					Mat frame2 = new Mat();
 					frame2 = video.getFrame(numImg);
+					
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					panelImage.repaint();
+					int nbAffiche = numImg + 1;
+					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
+					
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
 						int y = barycentres[1][numImg];
@@ -612,18 +624,8 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1:
-																		// rempli
-																		// le
-																		// cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
 					}
-					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					int nbAffiche = numImg + 1;
-					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-
 					frame.validate();
 
 				}
@@ -672,17 +674,12 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1:
-																		// rempli
-																		// le
-																		// cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
 					}
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 
 					lImage.setIcon(image);
-
 					panelImage.add(lImage);
-
 					panelImage.repaint();
 					int nbAffiche = numImg + 1;
 					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
@@ -730,6 +727,13 @@ public class Fenetre {
 						if (test.getY_()>10 && test.getY_()<video.getHeight()-10){
 							X[i] = test.getX_();
 							Y[i] = test.getY_();
+							Point centre = new Point(X[i], Y[i]);
+							int rayon = 10;
+							Scalar color = new Scalar(0, 0, 255);
+							// Tracer un cercle rouge représentant le barycentre
+
+							//Core.circle(video.getFrame(i), centre, rayon, color, -1); // -1: rempli le cercle
+						
 						} else
 						{
 							X[i]=-10;
@@ -780,14 +784,8 @@ public class Fenetre {
 
 			numImg = 0;
 
-			if (lImage.getMaximumSize().getHeight() > 0 && lImage.getMaximumSize().getWidth() > 0) // Si
-																									// on
-																									// a
-																									// déjà
-																									// ouvert
-																									// une
-																									// video
-																									// auparavant
+			if (lImage.getMaximumSize().getHeight() > 0 && lImage.getMaximumSize().getWidth() > 0) 
+				// Si on a déjà ouvert une video auparavant
 			{
 				// video.libererVideo(); // on libère la mémoire
 				lImage.removeAll();

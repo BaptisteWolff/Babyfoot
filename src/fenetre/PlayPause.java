@@ -54,24 +54,21 @@ public class PlayPause extends Thread {
 		long nextFrameTick = System.currentTimeMillis();
 		int loops;
 		while (i < nbimg && running) {
-			numImg = i;
+			
 			loops = 0;
 			nextFrameTick = System.currentTimeMillis();
 			long tot = nextFrameTick + skipTicks;
 			Mat frame2 = new Mat();
-			frame2 = video.getFrame(numImg);
+			frame2 = video.getFrame(i);
 			if (segmentation == true) {
-				int x = barycentres[0][numImg];
-				int y = barycentres[1][numImg];
+				int x = barycentres[0][i];
+				int y = barycentres[1][i];
 				Point centre = new Point(x, y);
 				int rayon = 10;
 				Scalar color = new Scalar(0, 0, 255);
 				// Tracer un cercle rouge représentant le barycentre
 
-				Core.circle(frame2, centre, rayon, color, -1); // -1:
-																// rempli
-																// le
-																// cercle
+				Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
 			}
 			ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 			while (System.currentTimeMillis() < tot && loops < 10000 && running) {
@@ -81,10 +78,11 @@ public class PlayPause extends Thread {
 				panelImage.repaint();
 				frame.validate();
 				loops++;
+				numImg = i;
 				nbAffiche = numImg + 1;
 				txtNum.setText("N°" + nbAffiche + "/" + nbimg);
 			}
-			numImg = i;
+			
 			i++;
 
 		}
