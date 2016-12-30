@@ -6,8 +6,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -31,7 +34,6 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
@@ -64,7 +66,8 @@ public class Fenetre {
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
 	JButton bSauvegarder = new JButton("Sauvegarder");
-
+	
+	JProgressBar barSeg = new JProgressBar(0,100);
 	JTextField tChemin = new JTextField("Chemin");
 	JTextField txtNum = new JTextField();
 	JRadioButton plusmoins = new JRadioButton("Plus 1 moins 1");
@@ -81,23 +84,25 @@ public class Fenetre {
 
 	JButton bScores = new JButton("Calcul des scores"); // Scores
 	// ---- Joueur 1 ----
-	JTextArea txtScoreGoalName1 = new JTextArea("Buts");
-	JTextArea txtScoreGamelleName1 = new JTextArea("Gamelles");
-	JTextArea txtScoreOutName1 = new JTextArea("Sorties");
-	JTextArea txtScorej1 = new JTextArea("Joueur 1");
+	JTextArea txtScoreGoalName1 = new JTextArea("Buts : ");
+	JTextArea txtScoreGamelleName1 = new JTextArea("Gamelles : ");
+	JTextArea txtScoreOutName1 = new JTextArea("Sorties : ");
+	JTextArea txtScorej1 = new JTextArea("Joueur 1 : ");
 	JTextArea txtScore1 = new JTextArea("0");
 	JTextArea txtScore1Goal = new JTextArea("0");
 	JTextArea txtScore1Gamelle = new JTextArea("0");
 	JTextArea txtScore1Out = new JTextArea("0");
 	// ---- Joueur 2 ----
-	JTextArea txtScoreGoalName2 = new JTextArea("Buts");
-	JTextArea txtScoreGamelleName2 = new JTextArea("Gamelles");
-	JTextArea txtScoreOutName2 = new JTextArea("Sorties");
-	JTextArea txtScorej2 = new JTextArea("Joueur 2");
+	JTextArea txtScoreGoalName2 = new JTextArea("Buts : ");
+	JTextArea txtScoreGamelleName2 = new JTextArea("Gamelles : ");
+	JTextArea txtScoreOutName2 = new JTextArea("Sorties : ");
+	JTextArea txtScorej2 = new JTextArea("Joueur 2 : ");
 	JTextArea txtScore2 = new JTextArea("0");
 	JTextArea txtScore2Goal = new JTextArea("0");
 	JTextArea txtScore2Gamelle = new JTextArea("0");
 	JTextArea txtScore2Out = new JTextArea("0");
+
+
 	
 
 	// PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
@@ -106,11 +111,7 @@ public class Fenetre {
 		// Création de la fenêtre et du container
 
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);// Plein ecran
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le
-																// processus
-																// lorsqu'on
-																// clique sur la
-																// croix rouge
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le processus lorsqu'on clique sur la croix rouge
 
 		JPanel panelPrincipal = new JPanel();
 		JPanel panelGauche = new JPanel();
@@ -140,8 +141,10 @@ public class Fenetre {
 		panelLecture.setLayout(new FlowLayout());
 		panelChemin.setLayout(new FlowLayout());
 		panelScores1.setLayout(new FlowLayout());
-		panelScores2.setLayout(new FlowLayout());
+		panelScores2.setLayout(new GridLayout(4,2,5,5));
+		panelScores3.setLayout(new GridLayout(4,2,5,5));
 		panelScores.setLayout(new BorderLayout());
+		panelGroup2.setLayout(new GridLayout(2,2,5,5));
 		panelGroup3.setLayout(new BorderLayout());
 
 		// panelImage.setLayout(new CardLayout(10,10));
@@ -164,25 +167,29 @@ public class Fenetre {
 		// Ajout des composants au container group2
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
+		panelGroup2.add(bScores);
 		panelGroup2.add(bSauvegarder);
 
 		// Ajout des composants au container Lignes1
 
 		panelLignes1.add(bSelectSGa);
 		panelLignes1.add(bSelectBGa);
-
+		panelLignes1.add(bSelectBDr);
+		panelLignes1.add(bSelectSDr);
+		
 		// Ajout des composants au container Lignes2
-
-		panelLignes2.add(bSelectBDr);
-		panelLignes2.add(bSelectSDr);
+		
+		panelLignes2.setPreferredSize(new Dimension(200, 70));
+		panelLignes2.add(barSeg);
+		
+		
 
 		// Ajout des composants au container Scores
 
-		panelScores1.add(bScores);
-		panelScores1.add(txtScorej1);
-		panelScores1.add(txtScore1);
-		panelScores1.add(txtScorej2);
-		panelScores1.add(txtScore2);
+		panelScores2.add(txtScorej1);
+		panelScores2.add(txtScore1);
+		panelScores3.add(txtScorej2);
+		panelScores3.add(txtScore2);
 		panelScores2.add(txtScoreGoalName1);
 		panelScores2.add(txtScore1Goal);
 		panelScores2.add(txtScoreGamelleName1);
@@ -195,6 +202,8 @@ public class Fenetre {
 		panelScores3.add(txtScore2Gamelle);
 		panelScores3.add(txtScoreOutName2);
 		panelScores3.add(txtScore2Out);
+		
+		
 		panelScores.add(panelScores1, BorderLayout.NORTH);
 		panelScores.add(panelScores2, BorderLayout.WEST);
 		panelScores.add(panelScores3, BorderLayout.EAST);
@@ -208,8 +217,8 @@ public class Fenetre {
 		panelGauche2.add(panelLignes1, BorderLayout.NORTH);
 		panelGauche2.add(panelLignes2, BorderLayout.CENTER);
 
-		// Ajout des composants au container Gauche2
-		panelGauche3.add(panelScores, BorderLayout.NORTH);
+		// Ajout des composants au container Gauche3
+		panelGauche3.add(panelScores, BorderLayout.CENTER);
 
 		// Ajout des composants au container Gauche
 		panelGauche.add(panelGauche1, BorderLayout.NORTH);
@@ -230,8 +239,8 @@ public class Fenetre {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int) screenSize.getWidth();
 		int height = (int) screenSize.getHeight();
-		Dimension dimIm = new Dimension(width * 2 / 3, height * 2 / 3);// Dimension
-																		// image
+		Dimension dimIm = new Dimension(width * 2 / 3, height * 2 / 3); // Dimension image
+		
 		// Taille par défaut lorsqu'on est pas en plein écran
 		panelImage.setPreferredSize(dimIm);
 		panelImage.setMaximumSize(dimIm);
@@ -290,6 +299,48 @@ public class Fenetre {
 		txtScore2Goal.setEditable(false);
 		txtScore2Gamelle.setEditable(false);
 		txtScore2Out.setEditable(false);
+		
+		// Affiche les scores en gras
+		Font libelles = new Font("Arial", Font.ROMAN_BASELINE, 14);
+		Font scores = new Font("Arial", Font.BOLD, 16);
+		
+		txtScoreGoalName1.setFont(libelles);	// texte "Buts"
+		txtScoreGoalName1.setBackground(null);
+		txtScoreGamelleName1.setFont(libelles);	// texte "Gamelles"
+		txtScoreGamelleName1.setBackground(null);
+		txtScoreOutName1.setFont(libelles);		// texte "Sorties"
+		txtScoreOutName1.setBackground(null);
+		txtScorej1.setFont(scores);				// texte "Joueur 1"
+		txtScorej1.setBackground(null);
+		txtScore1.setFont(scores);				// score J1
+		txtScore1.setBackground(null);
+		txtScore1Goal.setFont(scores);			// nb de buts
+		txtScore1Goal.setBackground(null);
+		txtScore1Gamelle.setFont(scores);		// nb de gamelles
+		txtScore1Gamelle.setBackground(null);
+		txtScore1Out.setFont(scores);			// nb de sorties
+		txtScore1Out.setBackground(null);
+		
+		txtScoreGoalName2.setFont(libelles);	// texte "Buts"
+		txtScoreGoalName2.setBackground(null);
+		txtScoreGamelleName2.setFont(libelles);	// texte "Gamelles"
+		txtScoreGamelleName2.setBackground(null);
+		txtScoreOutName2.setFont(libelles);		// texte "Sorties"
+		txtScoreOutName2.setBackground(null);
+		txtScorej2.setFont(scores);				// texte "Joueur 2"
+		txtScorej2.setBackground(null);
+		txtScore2.setFont(scores);				// score J2
+		txtScore2.setBackground(null);
+		txtScore2Goal.setFont(scores);			// nb de buts
+		txtScore2Goal.setBackground(null);
+		txtScore2Gamelle.setFont(scores);		// nb de gamelles
+		txtScore2Gamelle.setBackground(null);
+		txtScore2Out.setFont(scores);			// nb de sorties
+		txtScore2Out.setBackground(null);
+		
+		
+		
+		
 		
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
@@ -567,6 +618,7 @@ public class Fenetre {
 					bSelectSGa.setEnabled(true);
 					frame.validate();
 					segmentation = false;
+					barSeg.setMaximum(nbimg);
 
 				} catch (NullPointerException e3) {
 					// Si le fichier n'est pas une video ou que l'utilisateur
@@ -723,6 +775,7 @@ public class Fenetre {
 					for (int i = 0; i < nbImg; i++) {
 
 						System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
+						
 						test = new Segmentation(video.getFrameForSeg(i), h, s, v);
 						if (test.getY_()>10 && test.getY_()<video.getHeight()-10){
 							X[i] = test.getX_();
@@ -731,6 +784,7 @@ public class Fenetre {
 							int rayon = 10;
 							Scalar color = new Scalar(0, 0, 255);
 							// Tracer un cercle rouge représentant le barycentre
+							
 
 							//Core.circle(video.getFrame(i), centre, rayon, color, -1); // -1: rempli le cercle
 						
@@ -740,6 +794,8 @@ public class Fenetre {
 							Y[i]=-10;
 						}
 						
+						barSeg.setValue(i);
+						frame.validate();
 
 						// if (test.getX_()>video.getWidth()*0.4 &&
 						// test.getX_()<video.getWidth()*0.6)
@@ -747,7 +803,8 @@ public class Fenetre {
 						// i++; // Si la balle se trouve au milieu de l'image,
 						// on saute 1 image sur 2 (zone non interessante)
 						// }
-
+						
+						
 					}
 
 					video.endSeg(); // Fin de la segmentation
