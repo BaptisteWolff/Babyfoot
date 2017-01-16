@@ -563,10 +563,15 @@ public class Fenetre {
 			}
 			if (e.getSource() == bSauvegarder) {
 				int nbimg = video.getSize();
-				Events e1 = new Events(barycentres, nbimg, X, Y);
+				String nomVid=	tChemin.getText();
+				nomVid= nomVid.substring(nomVid.lastIndexOf("/"));
+				nomVid=nomVid.substring(2, nomVid.lastIndexOf("."));
+				System.out.println(nomVid);
+				Events e1 = new Events(barycentres, nbimg, clic.getX(), clic.getY());
+				e1.detection();
 				Player p1 = e1.getPlayer1();
 				Player p2 = e1.getPlayer2();
-				Sauvegarde.write(p1, p2, regle);
+				Sauvegarde.write(p1, p2, regle, nomVid);
 			}
 			if (e.getSource() == bSelectCentre) {
 				c = 0;
