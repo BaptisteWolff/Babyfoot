@@ -380,12 +380,19 @@ public class Fenetre {
 
 		}
 
-		public void mouseClicked(MouseEvent e) {
-			Graphics g = pan.getGraphics();
-			Graphics2D g1 = (Graphics2D) g;
-			Graphics2D g2 = (Graphics2D) g;
-			Graphics2D g3 = (Graphics2D) g;
-			Graphics2D g4 = (Graphics2D) g;
+		Graphics g;
+		Graphics2D g1;
+		Graphics2D g2;
+		Graphics2D g3;
+		Graphics2D g4;
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			g = pan.getGraphics();
+			g1 = (Graphics2D) g;
+			g2 = (Graphics2D) g;
+			g3 = (Graphics2D) g;
+			g4 = (Graphics2D) g;
 
 			if (c == 0) {
 				int x = e.getX();
@@ -418,15 +425,7 @@ public class Fenetre {
 				Y[0] = e.getY();
 				c++;
 			}
-			if (c == 11) {
-				X[1] = e.getX();
-				Y[1] = e.getY();
-				g1.setColor(Color.red);
-				g1.setStroke(new BasicStroke(3));
-				g1.drawLine(X[0], Y[0], X[1], Y[1]);
-				g1.dispose();
-
-			}
+			
 			if (c == 12) {
 				g2.setColor(new Color(100, 100, 100));
 				g2.setStroke(new BasicStroke(3));
@@ -435,15 +434,7 @@ public class Fenetre {
 				Y[2] = e.getY();
 				c++;
 			}
-			if (c == 13) {
-				X[3] = e.getX();
-				Y[3] = e.getY();
-				g2.setColor(Color.green);
-				g2.setStroke(new BasicStroke(3));
-				g2.drawLine(X[2], Y[2], X[3], Y[3]);
-				g2.dispose();
-
-			}
+			
 			if (c == 14) {
 				g3.setColor(new Color(100, 100, 100));
 				g3.setStroke(new BasicStroke(3));
@@ -452,15 +443,7 @@ public class Fenetre {
 				Y[4] = e.getY();
 				c++;
 			}
-			if (c == 15) {
-				X[5] = e.getX();
-				Y[5] = e.getY();
-				g3.setColor(Color.green);
-				g3.setStroke(new BasicStroke(3));
-				g3.drawLine(X[4], Y[4], X[5], Y[5]);
-				g3.dispose();
-
-			}
+			
 			if (c == 16) {
 				g4.setColor(new Color(100, 100, 100));
 				g4.setStroke(new BasicStroke(3));
@@ -469,6 +452,41 @@ public class Fenetre {
 				Y[6] = e.getY();
 				c++;
 			}
+
+		}	// Fin mousePressed
+		
+		public void mouseReleased (MouseEvent e)
+		{
+			if (c == 11) {
+				X[1] = e.getX();
+				Y[1] = e.getY();
+				g1.setColor(Color.red);
+				g1.setStroke(new BasicStroke(3));
+				g1.drawLine(X[0], Y[0], X[1], Y[1]);
+				g1.dispose();
+				c++;
+				bSelectBGa.setEnabled(true);
+			}
+			if (c == 13) {
+				X[3] = e.getX();
+				Y[3] = e.getY();
+				g2.setColor(Color.green);
+				g2.setStroke(new BasicStroke(3));
+				g2.drawLine(X[2], Y[2], X[3], Y[3]);
+				g2.dispose();
+				c++;
+				bSelectBDr.setEnabled(true);
+			}
+			if (c == 15) {
+				X[5] = e.getX();
+				Y[5] = e.getY();
+				g3.setColor(Color.green);
+				g3.setStroke(new BasicStroke(3));
+				g3.drawLine(X[4], Y[4], X[5], Y[5]);
+				g3.dispose();
+				c++;
+				bSelectSDr.setEnabled(true);
+			}
 			if (c == 17) {
 				X[7] = e.getX();
 				Y[7] = e.getY();
@@ -476,10 +494,12 @@ public class Fenetre {
 				g4.setStroke(new BasicStroke(3));
 				g4.drawLine(X[6], Y[6], X[7], Y[7]);
 				g4.dispose();
-
+				c++;
+				bScores.setEnabled(true);
 			}
-
-		}
+			
+		}	// Fin mouseReleased
+		
 
 		public int getx() {
 			return x;
