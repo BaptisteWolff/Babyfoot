@@ -1,11 +1,7 @@
 package loadVideo;
 
-import java.awt.Frame;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -229,6 +225,8 @@ public class LoadVideo {
 	public void endSeg() {
 		cap = new VideoCapture(videoName);
 		nLastFrame = -1;
+		nLastFrameRec = -1;
+		frames.clear();
 	}
 
 	public ImageIcon getImage(int numImg) {
