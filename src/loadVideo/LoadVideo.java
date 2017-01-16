@@ -1,6 +1,8 @@
 package loadVideo;
 
+import java.awt.Frame;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,26 +24,20 @@ public class LoadVideo {
 	private int size = 0;
 	VideoCapture cap;
 	String videoName;
-	int nLastFrame = -1;
+	int nLastFrame = -1; // Number of the last frame loaded
+	int nLastFrameRec = -1; // Number of the last frame recorded and saved in
+							// the arraylist frames.
 	Mat currentFrame = new Mat();
-	Mat lastFrame = new Mat();
-	AtomicInteger lastFrameLoaded = new AtomicInteger();
-	// private ArrayList<Mat> frames_ = new ArrayList<Mat>();
+	ArrayList<Mat> frames = new ArrayList<Mat>(); // Contains the last 50 frames
 
 	// http://stackoverflow.com/questions/17401852/open-video-file-with-opencv-java
 	public LoadVideo(String videoName) {
 		this.cap = new VideoCapture(videoName);
 		this.width = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
 		this.height = (int) cap.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
-		// int i = 0;
 		this.size = (int) cap.get(7); // cap.get(7) retourne le nombre de frames
 										// de cap
 		this.videoName = videoName;
-		/*
-		 * while (i < (int) cap.get(7)) // cap.get(7) retourne le nombre de
-		 * frames de cap { Mat frame = new Mat(); cap.read(frame);
-		 * frames_.add(frame); i++; }
-		 */
 		System.out.println("video loaded");
 	}
 
@@ -153,70 +149,70 @@ public class LoadVideo {
 		System.out.println("end");
 	}
 
-	public class FindLastFrame extends Thread {
-		int numFrame = 0;
-
-		public FindLastFrame(int numFrame) {
-			super();
-			this.numFrame = numFrame;
-		}
-
-		public void run() {
-			cap = new VideoCapture(videoName);
-			int i = 0;
-			while (i < numFrame - 2) {
-				cap.grab();
-				i++;
-			}
-			cap.read(lastFrame);
-			lastFrameLoaded.set(0);
-		}
-	}
-	/* RETOURNE UNE frame DE LA VIDEO */
-
 	public Mat getFrame(int numFrame) {
-		while (lastFrameLoaded.get() != 0) { // On vérifie que le thread findLastFrame n'est pas en cours d'éxécution.
-			try {
-				TimeUnit.MILLISECONDS.sleep(10);
-			} catch (InterruptedException e) {
-				System.out.println("waitAborted");// TODO Auto-generated
-													// catch block
-				e.printStackTrace();
-			}
-		}
+		
 		int diff = numFrame - nLastFrame;
+
 		if (diff == 0) {
 			return currentFrame;
 		}
-		if (diff == 1) {
-			currentFrame.copyTo(lastFrame);
-			cap.read(currentFrame);
+
+		if (numFrame <= nLastFrameRec && numFrame >= nLastFrameRec - frames.size()) { // Frame
+			// already
+			// saved
+			// in
+			// frames
+			currentFrame = frames.get(numFrame - (nLastFrameRec - frames.size()));
+			return currentFrame;
 		}
+
+		if (diff == 1) { // play video
+
+			Mat frame = new Mat();
+			currentFrame.copyTo(frame);
+			frames.add(frame);
+			if (numFrame > 49) {
+				frames.remove(0);
+			}
+
+			cap.read(currentFrame);
+
+		}
+
 		if (diff > 1) {
-			while (diff > 2) {
+			while (diff > 49) {
 				cap.grab();
 				diff--;
 			}
-			cap.read(lastFrame);
+			while (diff > 1) {
+				Mat frame = new Mat();
+				cap.read(frame);
+				frames.add(frame);
+				if (frames.size() > 49) {
+					frames.remove(0);
+				}
+				diff--;
+			}
 			cap.read(currentFrame);
 		}
-		if (diff < 1) {
+
+		if (diff <= -1) {
 			cap = new VideoCapture(videoName);
 			int i = 0;
-			while (i < numFrame - 2) {
+			frames.clear();
+			while (i < numFrame - 1) {
 				cap.grab();
+				if (i > numFrame - 50) {
+					Mat frame = new Mat();
+					cap.retrieve(frame);
+					frames.add(frame);
+				}
 				i++;
 			}
-			cap.read(lastFrame);
 			cap.read(currentFrame);
 		}
-		if (diff == -1) {
-			lastFrameLoaded.set(1);
-			lastFrame.copyTo(currentFrame);
-			FindLastFrame t = new FindLastFrame(numFrame);
-			t.start();
 
-		}
+		nLastFrameRec = numFrame;
 		nLastFrame = numFrame;
 		return currentFrame;
 	}

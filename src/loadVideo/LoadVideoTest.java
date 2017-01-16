@@ -18,7 +18,8 @@ public class LoadVideoTest {
 		}*/
 		LoadVideo video = new LoadVideo(name);
 		video.displayVideo(120,0);
-		video.displayFrame(299);
+		video.displayFrame(150);
+		video.displayFrame(140);
 
 	}
 }
