@@ -15,15 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import events.Events;
 import events.Player;
-import events.StructEvent;
+
 
 public class Sauvegarde {
-	static ArrayList <StructEvent> listeEvent = new ArrayList <StructEvent>();
-	public static void write(Player j1, Player j2, int regle, String nomVid){
+	
+	public static void write(Player j1, Player j2, int regle, String nomVid, Events e1){
 
 		int score1=0;
 		int score2=0;
+		ArrayList <String> listeEvent = e1.getlisteEvent();
 		ArrayList <Integer> gam1=j1.getGamelle();
 		ArrayList <Integer> gam2=j2.getGamelle();
 		ArrayList <Integer> goal1=j1.getGoal();
@@ -45,8 +47,8 @@ public class Sauvegarde {
 			nbGam2=nbGam2;
 			break;
 		case 2:		// regle -1
-			nbGam1=-nbGam1;
-			nbGam2=-nbGam2;
+			nbGam1=-nbGam2;
+			nbGam2=-nbGam1;
 			break;
 		default:	// regle +1/-1 (regle=0 ou regle par défaut)
 			nbGam1=nbGam1-nbGam2;
@@ -78,48 +80,30 @@ public class Sauvegarde {
 			fichier.newLine();
 			fichier.write("    But: "+(nbGoal1));
 
-			for(int i=0;i<nbGoal1;i++){
-				StructEvent evt=new StructEvent(goal1.get(i),'B',1);
-				listeEvent.add(evt);
-			}
+		
 			fichier.newLine();
 			fichier.write("    Gamelle: "+ (nbGam1));
-			for(int i=0;i<nbGam1;i++){
-				StructEvent evt=new StructEvent(gam1.get(i),'G',1);
-				listeEvent.add(evt);
-			}
+		
 			fichier.newLine();
 			fichier.write("    Sortie: "+(nbOut1));
-			for(int i=0;i<nbOut1;i++){
-				StructEvent evt=new StructEvent(out1.get(i),'S',1);
-				listeEvent.add(evt);
-			}
+			
 			fichier.newLine();
 			fichier.newLine();
 			fichier.write("Equipe 2 (droite):"+score2);
 			fichier.newLine();
 			fichier.write("    But: "+(nbGoal2));
-			for(int i=0;i<nbGoal2;i++){
-				StructEvent evt=new StructEvent(goal2.get(i),'B',2);
-				listeEvent.add(evt);
-			}
+			
 			fichier.newLine();
 			fichier.write("    Gamelle: "+ (nbGam2));
-			for(int i=0;i<nbGam2;i++){
-				StructEvent evt=new StructEvent(gam2.get(i),'G',2);
-				listeEvent.add(evt);
-			}
+			
 			fichier.newLine();
 			fichier.write("    Sortie: "+(nbOut2));
-			for(int i=0;i<nbOut2;i++){
-				StructEvent evt=new StructEvent(out2.get(i),'S',2);
-				listeEvent.add(evt);
-			}
+			
 
 			fichier.newLine();
 			fichier.newLine();
 			fichier.write("Evénements:");
-			Collections.sort(listeEvent);
+			//Collections.sort(listeEvent);
 			for(int i=0;i<listeEvent.size();i++){
 				fichier.newLine();
 				fichier.write("    "+listeEvent.get(i).toString());

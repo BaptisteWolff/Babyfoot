@@ -1,11 +1,14 @@
 package events;
 
+import java.util.ArrayList;
+
 public class Events {
 	int[][] barycentres = { { 0 }, { 0 } };
 	int sizeVideo = 0;
 	Player player1 = new Player();
 	Player player2 = new Player();
 	int[] goalLinesX = { 0 }, goalLinesY = { 0 };
+	ArrayList <String> listeEvent = new ArrayList <String>();
 
 	public Events(int[][] barycentres, int sizeVideo, int goalLinesX[], int goalLinesY[]) {
 		super();
@@ -21,6 +24,10 @@ public class Events {
 
 	public Player getPlayer2() {
 		return player2;
+	}
+	
+	public ArrayList<String> getlisteEvent() {
+		return listeEvent;
 	}
 
 	public void setSizeVideo(int sizeVideo) {
@@ -55,6 +62,7 @@ public class Events {
 						
 						if (x < xMoyOut1) { // ligne0 : sortie côté joueur 1
 							player1.addOut(nImage);
+							listeEvent.add(nImage+" Sortie 1");
 							eventOut = true;
 							eventGoal = false;
 							//player1.addOut(count);
@@ -64,6 +72,7 @@ public class Events {
 						}
 					} else if (eventGoal == true && playerNum==1) { // La balle retourne sur le terrain
 						player1.addGamelle(nImage - count);
+						listeEvent.add((nImage - count)+" Gamelle 1");
 						eventGoal = false;
 					}
 
@@ -74,6 +83,7 @@ public class Events {
 						
 						if (x > xMoyOut2) { // ligne4  :  sortie  côté  joueur  2
 							player2.addOut(nImage);
+							listeEvent.add(nImage+" Sortie 2");
 							eventOut = true;
 							eventGoal = false;
 							//player2.addOut(count);
@@ -90,6 +100,7 @@ public class Events {
 				} else if (eventGoal == true && playerNum==2) { // La balle retourne sur le
 												// terrain
 					player2.addGamelle(nImage - count);
+					listeEvent.add((nImage - count)+" Gamelle 2");
 					eventGoal = false;
 				}
 
@@ -99,9 +110,11 @@ public class Events {
 																				// détecté
 					if (playerNum == 1) {
 						player1.addGoal(nImage - count);
+						listeEvent.add((nImage - count)+" But 1");
 					}
 					if (playerNum == 2) {
 						player2.addGoal(nImage - count);
+						listeEvent.add((nImage - count)+" But 2");
 					}
 					eventGoal = false;
 				}
