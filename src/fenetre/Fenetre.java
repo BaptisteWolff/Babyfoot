@@ -148,6 +148,8 @@ public class Fenetre {
 		panelScores.setLayout(new BorderLayout());
 		panelGroup2.setLayout(new GridLayout(2,2,5,5));
 		panelGroup3.setLayout(new BorderLayout());
+		panelLignes2.setLayout(new FlowLayout(FlowLayout.CENTER, 70, 5)); // Center-aligned, 100px horiz. gap, 5px vert. gap
+		
 
 		// panelImage.setLayout(new CardLayout(10,10));
 
@@ -178,13 +180,12 @@ public class Fenetre {
 		panelLignes1.add(bSelectBGa);
 		panelLignes1.add(bSelectBDr);
 		panelLignes1.add(bSelectSDr);
-		panelLignes1.add(bValid);
 		
 		// Ajout des composants au container Lignes2
 		
-		panelLignes2.setPreferredSize(new Dimension(200, 70));
+		barSeg.setPreferredSize(new Dimension(350, 25));												
 		panelLignes2.add(barSeg);
-		
+		panelLignes2.add(bValid);
 		
 
 		// Ajout des composants au container Scores
@@ -284,6 +285,7 @@ public class Fenetre {
 		bCommencer.setEnabled(false);
 		bSauvegarder.setEnabled(false);
 		bScores.setEnabled(false);
+		bValid.setEnabled(false);
 		// ---- Joueur 1 ----
 		txtScoreGoalName1.setEditable(false);		// texte "Buts"
 		txtScoreGamelleName1.setEditable(false);	// texte "Gamelles"
@@ -495,7 +497,11 @@ public class Fenetre {
 				g4.drawLine(X[6], Y[6], X[7], Y[7]);
 				g4.dispose();
 				c++;
-				bScores.setEnabled(true);
+				if (segmentation)
+				{
+					bScores.setEnabled(true);
+				}
+				bValid.setEnabled(true);
 			}
 			
 		}	// Fin mouseReleased
@@ -655,6 +661,14 @@ public class Fenetre {
 					bSuivant.setEnabled(true);
 					bSelectCentre.setEnabled(true);
 					bSelectSGa.setEnabled(true);
+					bScores.setEnabled(false);
+					bSauvegarder.setEnabled(false);				
+					bSelectBGa.setEnabled(false);
+					bSelectBDr.setEnabled(false);
+					bSelectSDr.setEnabled(false);
+					bValid.setEnabled(false);
+					valid=false;
+					
 					frame.validate();
 					segmentation = false;
 					barSeg.setMaximum(nbimg);
@@ -1001,6 +1015,10 @@ public class Fenetre {
 
 					bCommencer.setEnabled(false);
 					bSelectCentre.setEnabled(false);
+					if (valid)
+					{
+						bScores.setEnabled(true);
+					}
 
 					segmentation = true;
 
