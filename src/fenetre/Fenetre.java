@@ -59,26 +59,26 @@ public class Fenetre {
 	JButton bCommencer = new JButton("Commencer");
 	JButton bValid = new JButton("Valider");
 	JButton bPlay = new JButton("Play");
-	JButton bSelectCentre = new JButton("centre de la balle");
-	JButton bSelectSGa = new JButton("ligne de sortie Gauche");
-	JButton bSelectBGa = new JButton("ligne de but Gauche");
-	JButton bSelectBDr = new JButton("ligne de but Droite");
-	JButton bSelectSDr = new JButton("ligne de sortie Droite");
+	JButton bSelectCentre = new JButton("Centre de la balle");
+	JButton bSelectSGa = new JButton("Ligne de sortie Gauche");
+	JButton bSelectBGa = new JButton("Ligne de but Gauche");
+	JButton bSelectBDr = new JButton("Ligne de but Droite");
+	JButton bSelectSDr = new JButton("Ligne de sortie Droite");
 	JButton bPause = new JButton("Pause");
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
 	JButton bSauvegarder = new JButton("Sauvegarder");
 	
-	JProgressBar barSeg = new JProgressBar(0,100);
-	JTextField tChemin = new JTextField("Chemin");
-	JTextField txtNum = new JTextField();
-	JRadioButton plusmoins = new JRadioButton("Plus 1 moins 1");
-	JRadioButton plus = new JRadioButton("Plus 1");
-	JRadioButton moins = new JRadioButton("Moins 1");
-	ButtonGroup choixGam = new ButtonGroup();
-	JFrame frame = new JFrame("Baby-Foot");
-	JPanel panelImage = new JPanel();
-	JLabel lImage = new JLabel();
+	JProgressBar barSeg = new JProgressBar(0,100);					// Bar de progression de la segmentation
+	JTextArea tChemin = new JTextArea("Chemin");					// Nom de la video (initialement le nom)
+	JTextField txtNum = new JTextField();							// Numéro de l'image en cours
+	JRadioButton plusmoins = new JRadioButton("Plus 1 moins 1");	// //
+	JRadioButton plus = new JRadioButton("Plus 1");					// Choix de la règle pour la gamelle
+	JRadioButton moins = new JRadioButton("Moins 1");				// //
+	ButtonGroup choixGam = new ButtonGroup();						// Selection de la règle de la gamelle
+	JFrame frame = new JFrame("Baby-Foot");							// La fenêtre
+	JPanel panelImage = new JPanel();								// La fenêtre de la vidéo
+	JLabel lImage = new JLabel();									// L'image en cours
 
 	int[][] barycentres = { { 0 }, { 0 } };
 	boolean videoSeg = false;
@@ -141,7 +141,7 @@ public class Fenetre {
 		panelGauche3.setLayout(new BorderLayout());
 		panelDroit.setLayout(new BorderLayout());
 		panelLecture.setLayout(new FlowLayout());
-		panelChemin.setLayout(new FlowLayout());
+		panelChemin.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
 		panelScores1.setLayout(new FlowLayout());
 		panelScores2.setLayout(new GridLayout(4,2,5,5));
 		panelScores3.setLayout(new GridLayout(4,2,5,5));
@@ -168,6 +168,7 @@ public class Fenetre {
 		panelGroup.add(plus);
 		panelGroup.add(moins);
 		plusmoins.setSelected(true);
+		
 		// Ajout des composants au container group2
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
@@ -275,7 +276,6 @@ public class Fenetre {
 		bPrecedent.setEnabled(false);
 		bPause.setEnabled(false);
 		bSuivant.setEnabled(false);
-		tChemin.setEnabled(false);
 		txtNum.setEnabled(false);
 		bSelectCentre.setEnabled(false);
 		bSelectSGa.setEnabled(false);
@@ -342,6 +342,8 @@ public class Fenetre {
 		txtScore2Gamelle.setBackground(null);
 		txtScore2Out.setFont(scores);			// nb de sorties
 		txtScore2Out.setBackground(null);
+		tChemin.setFont(libelles);				// Titre de la video
+		tChemin.setBackground(null);
 		
 		
 		
@@ -633,9 +635,8 @@ public class Fenetre {
 					JFileChooser ch = new FenetreOuvrir();
 					String str = ch.getSelectedFile().getAbsolutePath();
 					// System.out.println(str);
-					String replacedStr = str.replace('\\', '/'); // Pour avoir
-																	// un chemin
-																	// exploitable
+					String replacedStr = str.replace('\\', '/'); // Pour avoir un chemin exploitable
+					String strNomVideo = ch.getSelectedFile().getName();
 					// System.out.println(replacedStr);
 					// reinitialisation des scores
 					// ---- Joueur1 ----
@@ -652,7 +653,7 @@ public class Fenetre {
 					afficherImage(replacedStr);
 					int nbimg = video.getSize();
 					int nbAffiche = numImg + 1;
-					tChemin.setText(replacedStr);
+					tChemin.setText(strNomVideo);
 					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
 					txtNum.setEnabled(true);
 					bPlay.setEnabled(true);
