@@ -26,9 +26,12 @@ public class PlayPause extends Thread {
 	JTextField txtNum = new JTextField();
 	boolean segmentation = false;
 	int[][] barycentres = { { 0 }, { 0 } };
+	boolean valid = false;
+	int[] X;
+	int[] Y;
 
 	public PlayPause(int numImg, LoadVideo video, JFrame frame, JPanel panelImage, JLabel lImage, JTextField txtNum,
-			boolean segmentation, int[][] barycentres) {
+			boolean segmentation, int[][] barycentres, boolean valid, int[] X,int[]Y) {
 		super();
 		this.numImg = numImg;
 		this.video = video;
@@ -38,6 +41,9 @@ public class PlayPause extends Thread {
 		this.txtNum = txtNum;
 		this.barycentres = barycentres;
 		this.segmentation = segmentation;
+		this.valid = valid;
+		this.X = X;
+		this.Y = Y;
 	}
 
 	public void arret() {
@@ -69,6 +75,51 @@ public class PlayPause extends Thread {
 				// Tracer un cercle rouge représentant le barycentre
 
 				Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+			}
+			
+			if (valid == true) {
+				int x0=X[0];
+				int y0 = Y[0];
+				Point P0 = new Point(x0, y0);
+				
+				int x1 = X[1];
+				int y1 = Y[1];
+				Point P1 = new Point(x1, y1);
+				
+				int x2=X[2];
+				int y2= Y[2];
+				Point P2 = new Point(x2, y2);
+				
+				int x3 = X[3];
+				int y3 = Y[3];
+				Point P3 = new Point(x3, y3);
+				
+				int x4=X[4];
+				int y4 = Y[4];
+				Point P4 = new Point(x4, y4);
+				
+				int x5 = X[5];
+				int y5 = Y[5];
+				Point P5 = new Point(x5, y5);
+				
+				int x6=X[6];
+				int y6 = Y[6];
+				Point P6 = new Point(x6, y6);
+				
+				int x7 = X[7];
+				int y7 = Y[7];
+				Point P7 = new Point(x7, y7);
+				
+				Scalar color = new Scalar(0, 0, 255);
+				Scalar color2 = new Scalar(0, 255, 0);
+				// Tracer une ligne rouge
+				
+				Core.line(frame2, P0, P1, color,3);
+				Core.line(frame2, P2, P3, color2,3);
+				Core.line(frame2, P4, P5, color2,3);
+				Core.line(frame2, P6, P7, color,3);
+
+				
 			}
 			ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 			while (System.currentTimeMillis() < tot && loops < 10000 && running) {

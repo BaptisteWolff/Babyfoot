@@ -520,7 +520,7 @@ public class Fenetre {
 
 	public class Ecouteur implements ActionListener {
 
-		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres);
+		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres, valid, X, Y);
 
 		public void actionPerformed(ActionEvent e) {
 	
@@ -591,7 +591,8 @@ public class Fenetre {
 				e1.detection();
 				Player p1 = e1.getPlayer1();
 				Player p2 = e1.getPlayer2();
-				Sauvegarde.write(p1, p2, regle, nomVid, e1);
+				Sauvegarde.write(p1, p2, regle, nomVid,e1);
+				
 			}
 			if (e.getSource() == bSelectCentre) {
 				c = 0;
@@ -706,7 +707,7 @@ public class Fenetre {
 						Point P7 = new Point(x7, y7);
 						
 						Scalar color = new Scalar(0, 0, 255);
-						Scalar color2 = new Scalar(0, 0, 255);
+						Scalar color2 = new Scalar(0, 255, 0);
 						// Tracer une ligne rouge
 						
 						Core.line(frame2, P0, P1, color,3);
@@ -716,15 +717,6 @@ public class Fenetre {
 
 						
 					}
-					frame.validate();
-					
-					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					int nbAffiche = numImg + 1;
-					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-					
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
 						int y = barycentres[1][numImg];
@@ -735,8 +727,17 @@ public class Fenetre {
 
 						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
 					}
+					
+					
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					panelImage.repaint();
+					int nbAffiche = numImg + 1;
+					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
+					
 					frame.validate();
-
+			
 				}
 			}
 			if (e.getSource() == bSuivant) {
@@ -790,16 +791,6 @@ public class Fenetre {
 
 						
 					}
-					frame.validate();
-					
-					
-					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
-					lImage.setIcon(image);
-					panelImage.add(lImage);
-					panelImage.repaint();
-					int nbAffiche = numImg + 1;
-					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-					
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
 						int y = barycentres[1][numImg];
@@ -809,14 +800,25 @@ public class Fenetre {
 						// Tracer un cercle rouge représentant le barycentre
 
 						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
-					}	
-					frame.validate();
+					}
+				
+					
+					
+					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
+					lImage.setIcon(image);
+					panelImage.add(lImage);
+					panelImage.repaint();
+					int nbAffiche = numImg + 1;
+					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
+					
+					frame.validate();	
+					
 				}	
 			}
 
 			if (e.getSource() == bPlay) {
 				if (!p.isAlive()) {
-					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres);
+					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres, valid, X, Y);
 					// System.out.println("play: "+numImg);
 					p.start();
 
@@ -849,6 +851,50 @@ public class Fenetre {
 				if (numEntre > 0 && numEntre <= nbimg) {
 					numImg = numEntre - 1;
 					Mat frame2 = video.getFrame(numImg);
+					if (valid == true) {
+						int x0=X[0];
+						int y0 = Y[0];
+						Point P0 = new Point(x0, y0);
+						
+						int x1 = X[1];
+						int y1 = Y[1];
+						Point P1 = new Point(x1, y1);
+						
+						int x2=X[2];
+						int y2= Y[2];
+						Point P2 = new Point(x2, y2);
+						
+						int x3 = X[3];
+						int y3 = Y[3];
+						Point P3 = new Point(x3, y3);
+						
+						int x4=X[4];
+						int y4 = Y[4];
+						Point P4 = new Point(x4, y4);
+						
+						int x5 = X[5];
+						int y5 = Y[5];
+						Point P5 = new Point(x5, y5);
+						
+						int x6=X[6];
+						int y6 = Y[6];
+						Point P6 = new Point(x6, y6);
+						
+						int x7 = X[7];
+						int y7 = Y[7];
+						Point P7 = new Point(x7, y7);
+						
+						Scalar color = new Scalar(0, 0, 255);
+						Scalar color2 = new Scalar(0, 255, 0);
+						// Tracer une ligne rouge
+						
+						Core.line(frame2, P0, P1, color,3);
+						Core.line(frame2, P2, P3, color2,3);
+						Core.line(frame2, P4, P5, color2,3);
+						Core.line(frame2, P6, P7, color,3);
+
+						
+					}
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
 						int y = barycentres[1][numImg];
