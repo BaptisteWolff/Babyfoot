@@ -25,7 +25,7 @@ public class Events {
 	public Player getPlayer2() {
 		return player2;
 	}
-	
+
 	public ArrayList<String> getlisteEvent() {
 		return listeEvent;
 	}
@@ -41,7 +41,7 @@ public class Events {
 
 		int nImage = 0; // numéro de l'image traitée
 		int count = 0; // nbr d'images pendant lesquelles la balle n'est pas
-						// détectée
+		// détectée
 		boolean eventGoal = false; // Balle présente dans une des cages
 		boolean eventOut = false; // Balle en dehors du terrain
 
@@ -50,16 +50,16 @@ public class Events {
 		while (nImage < sizeVideo) {
 			int x = X[nImage];
 			int y = Y[nImage];
-			
+
 			// Balle détectée
 			if (x > 0 && y > 0) {
 				if (eventOut == false) { // Balle sur le terrain
 					// --------------- Joueur 1 ----------------------
 					int xMoyGoal1=(goalLinesX[2] + goalLinesX[3])/2;
-					
+
 					if (x < xMoyGoal1) { // ligne1 : but cages joueur 1
 						int xMoyOut1=(goalLinesX[0] + goalLinesX[1])/2;
-						
+
 						if (x < xMoyOut1) { // ligne0 : sortie côté joueur 1
 							player1.addOut(nImage);
 							listeEvent.add(nImage+" Sortie 1");
@@ -80,7 +80,7 @@ public class Events {
 					int xMoyGoal2=(goalLinesX[4] + goalLinesX[5])/2;
 					if (x > xMoyGoal2) { // ligne3 : but cages joueur 2
 						int xMoyOut2=(goalLinesX[6] + goalLinesX[7])/2;
-						
+
 						if (x > xMoyOut2) { // ligne4  :  sortie  côté  joueur  2
 							player2.addOut(nImage);
 							listeEvent.add(nImage+" Sortie 2");
@@ -91,23 +91,24 @@ public class Events {
 							eventGoal = true;
 							playerNum = 2;
 						}
-					} else { // Balle en dehors du terrain
-						// Détection d'une remise en jeu après une sortie
-						if (x > goalLinesX[0] && x > goalLinesX[1] && x < goalLinesX[4] && x < goalLinesX[5]) {
-							eventOut = false;
-						}
+					} else if (eventGoal == true && playerNum==2) { // La balle retourne sur le
+						// terrain
+						player2.addGamelle(nImage - count);
+						listeEvent.add((nImage - count)+" Gamelle 2");
+						eventGoal = false;
 					}
-				} else if (eventGoal == true && playerNum==2) { // La balle retourne sur le
-												// terrain
-					player2.addGamelle(nImage - count);
-					listeEvent.add((nImage - count)+" Gamelle 2");
-					eventGoal = false;
+				} else { // Balle en dehors du terrain
+					// Détection d'une remise en jeu après une sortie
+					if (x > goalLinesX[0] && x > goalLinesX[1] && x < goalLinesX[4] && x < goalLinesX[5]) {
+						eventOut = false;
+					}
 				}
+
 
 				count = 0;
 			} else { // Balle non détectée ou en dehors du terrain
 				if (eventOut == false && eventGoal == true && count >= 12) { // Goal
-																				// détecté
+					// détecté
 					if (playerNum == 1) {
 						player1.addGoal(nImage - count);
 						listeEvent.add((nImage - count)+" But 1");
