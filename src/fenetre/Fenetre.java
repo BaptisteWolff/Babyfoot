@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -68,17 +69,21 @@ public class Fenetre {
 	JButton bPrecedent = new JButton("Précédent");
 	JButton bSuivant = new JButton("Suivant");
 	JButton bSauvegarder = new JButton("Sauvegarder");
-	
-	JProgressBar barSeg = new JProgressBar(0,100);					// Bar de progression de la segmentation
-	JTextArea tChemin = new JTextArea("Chemin");					// Nom de la video (initialement le nom)
-	JTextField txtNum = new JTextField();							// Numéro de l'image en cours
-	JRadioButton plusmoins = new JRadioButton("Plus 1 moins 1");	// //
-	JRadioButton plus = new JRadioButton("Plus 1");					// Choix de la règle pour la gamelle
-	JRadioButton moins = new JRadioButton("Moins 1");				// //
-	ButtonGroup choixGam = new ButtonGroup();						// Selection de la règle de la gamelle
-	JFrame frame = new JFrame("Baby-Foot");							// La fenêtre
-	JPanel panelImage = new JPanel();								// La fenêtre de la vidéo
-	JLabel lImage = new JLabel();									// L'image en cours
+
+	JProgressBar barSeg = new JProgressBar(0, 100); // Bar de progression de la
+													// segmentation
+	JTextArea tChemin = new JTextArea("Chemin"); // Nom de la video
+													// (initialement le nom)
+	JTextField txtNum = new JTextField(); // Numéro de l'image en cours
+	JRadioButton plusmoins = new JRadioButton("Plus 1 moins 1"); // //
+	JRadioButton plus = new JRadioButton("Plus 1"); // Choix de la règle pour la
+													// gamelle
+	JRadioButton moins = new JRadioButton("Moins 1"); // //
+	ButtonGroup choixGam = new ButtonGroup(); // Selection de la règle de la
+												// gamelle
+	JFrame frame = new JFrame("Baby-Foot"); // La fenêtre
+	JPanel panelImage = new JPanel(); // La fenêtre de la vidéo
+	JLabel lImage = new JLabel(); // L'image en cours
 
 	int[][] barycentres = { { 0 }, { 0 } };
 	boolean videoSeg = false;
@@ -104,16 +109,17 @@ public class Fenetre {
 	JTextArea txtScore2Gamelle = new JTextArea("0");
 	JTextArea txtScore2Out = new JTextArea("0");
 
-
-	
-
 	// PlayPause p = new PlayPause(numImg,video,frame,panelImage,lImage,txtNum);
 
 	public Fenetre() {
 		// Création de la fenêtre et du container
 
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);// Plein ecran
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le processus lorsqu'on clique sur la croix rouge
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Termine le
+																// processus
+																// lorsqu'on
+																// clique sur la
+																// croix rouge
 
 		JPanel panelPrincipal = new JPanel();
 		JPanel panelGauche = new JPanel();
@@ -143,13 +149,18 @@ public class Fenetre {
 		panelLecture.setLayout(new FlowLayout());
 		panelChemin.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
 		panelScores1.setLayout(new FlowLayout());
-		panelScores2.setLayout(new GridLayout(4,2,5,5));
-		panelScores3.setLayout(new GridLayout(4,2,5,5));
+		panelScores2.setLayout(new GridLayout(4, 2, 5, 5));
+		panelScores3.setLayout(new GridLayout(4, 2, 5, 5));
 		panelScores.setLayout(new BorderLayout());
-		panelGroup2.setLayout(new GridLayout(2,2,5,5));
+		panelGroup2.setLayout(new GridLayout(2, 2, 5, 5));
 		panelGroup3.setLayout(new BorderLayout());
-		panelLignes2.setLayout(new FlowLayout(FlowLayout.CENTER, 70, 5)); // Center-aligned, 100px horiz. gap, 5px vert. gap
-		
+		panelLignes2.setLayout(new FlowLayout(FlowLayout.CENTER, 70, 5)); // Center-aligned,
+																			// 100px
+																			// horiz.
+																			// gap,
+																			// 5px
+																			// vert.
+																			// gap
 
 		// panelImage.setLayout(new CardLayout(10,10));
 
@@ -168,7 +179,7 @@ public class Fenetre {
 		panelGroup.add(plus);
 		panelGroup.add(moins);
 		plusmoins.setSelected(true);
-		
+
 		// Ajout des composants au container group2
 		panelGroup2.add(bCommencer);
 		panelGroup2.add(bSelectCentre);
@@ -181,13 +192,12 @@ public class Fenetre {
 		panelLignes1.add(bSelectBGa);
 		panelLignes1.add(bSelectBDr);
 		panelLignes1.add(bSelectSDr);
-		
+
 		// Ajout des composants au container Lignes2
-		
-		barSeg.setPreferredSize(new Dimension(350, 25));												
+
+		barSeg.setPreferredSize(new Dimension(350, 25));
 		panelLignes2.add(barSeg);
 		panelLignes2.add(bValid);
-		
 
 		// Ajout des composants au container Scores
 
@@ -207,8 +217,7 @@ public class Fenetre {
 		panelScores3.add(txtScore2Gamelle);
 		panelScores3.add(txtScoreOutName2);
 		panelScores3.add(txtScore2Out);
-		
-		
+
 		panelScores.add(panelScores1, BorderLayout.NORTH);
 		panelScores.add(panelScores2, BorderLayout.WEST);
 		panelScores.add(panelScores3, BorderLayout.EAST);
@@ -244,8 +253,9 @@ public class Fenetre {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int) screenSize.getWidth();
 		int height = (int) screenSize.getHeight();
-		Dimension dimIm = new Dimension(width * 2 / 3, height * 2 / 3); // Dimension image
-		
+		Dimension dimIm = new Dimension(width * 2 / 3, height * 2 / 3); // Dimension
+																		// image
+
 		// Taille par défaut lorsqu'on est pas en plein écran
 		panelImage.setPreferredSize(dimIm);
 		panelImage.setMaximumSize(dimIm);
@@ -270,7 +280,7 @@ public class Fenetre {
 
 		Ecouteur listen = new Ecouteur();
 		Focus focus = new Focus(txtNum);
-		
+
 		// Boutons play non disponible au début
 		bPlay.setEnabled(false);
 		bPrecedent.setEnabled(false);
@@ -287,14 +297,14 @@ public class Fenetre {
 		bScores.setEnabled(false);
 		bValid.setEnabled(false);
 		// ---- Joueur 1 ----
-		txtScoreGoalName1.setEditable(false);		// texte "Buts"
-		txtScoreGamelleName1.setEditable(false);	// texte "Gamelles"
-		txtScoreOutName1.setEditable(false);		// texte "Sorties"
-		txtScorej1.setEditable(false);				// texte "Joueur 1"
-		txtScore1.setEditable(false);				// score J1
-		txtScore1Goal.setEditable(false);			// nb de buts
-		txtScore1Gamelle.setEditable(false);		// nb de gamelles
-		txtScore1Out.setEditable(false);			// nb de sorties
+		txtScoreGoalName1.setEditable(false); // texte "Buts"
+		txtScoreGamelleName1.setEditable(false); // texte "Gamelles"
+		txtScoreOutName1.setEditable(false); // texte "Sorties"
+		txtScorej1.setEditable(false); // texte "Joueur 1"
+		txtScore1.setEditable(false); // score J1
+		txtScore1Goal.setEditable(false); // nb de buts
+		txtScore1Gamelle.setEditable(false); // nb de gamelles
+		txtScore1Out.setEditable(false); // nb de sorties
 		// ---- Joueur 2 ----
 		txtScoreGoalName2.setEditable(false);
 		txtScoreGamelleName2.setEditable(false);
@@ -304,50 +314,47 @@ public class Fenetre {
 		txtScore2Goal.setEditable(false);
 		txtScore2Gamelle.setEditable(false);
 		txtScore2Out.setEditable(false);
-		
+
 		// Affiche les scores en gras
 		Font libelles = new Font("Arial", Font.ROMAN_BASELINE, 14);
 		Font scores = new Font("Arial", Font.BOLD, 16);
-		
-		txtScoreGoalName1.setFont(libelles);	// texte "Buts"
+
+		txtScoreGoalName1.setFont(libelles); // texte "Buts"
 		txtScoreGoalName1.setBackground(null);
-		txtScoreGamelleName1.setFont(libelles);	// texte "Gamelles"
+		txtScoreGamelleName1.setFont(libelles); // texte "Gamelles"
 		txtScoreGamelleName1.setBackground(null);
-		txtScoreOutName1.setFont(libelles);		// texte "Sorties"
+		txtScoreOutName1.setFont(libelles); // texte "Sorties"
 		txtScoreOutName1.setBackground(null);
-		txtScorej1.setFont(scores);				// texte "Joueur 1"
+		txtScorej1.setFont(scores); // texte "Joueur 1"
 		txtScorej1.setBackground(null);
-		txtScore1.setFont(scores);				// score J1
+		txtScore1.setFont(scores); // score J1
 		txtScore1.setBackground(null);
-		txtScore1Goal.setFont(scores);			// nb de buts
+		txtScore1Goal.setFont(scores); // nb de buts
 		txtScore1Goal.setBackground(null);
-		txtScore1Gamelle.setFont(scores);		// nb de gamelles
+		txtScore1Gamelle.setFont(scores); // nb de gamelles
 		txtScore1Gamelle.setBackground(null);
-		txtScore1Out.setFont(scores);			// nb de sorties
+		txtScore1Out.setFont(scores); // nb de sorties
 		txtScore1Out.setBackground(null);
-		
-		txtScoreGoalName2.setFont(libelles);	// texte "Buts"
+
+		txtScoreGoalName2.setFont(libelles); // texte "Buts"
 		txtScoreGoalName2.setBackground(null);
-		txtScoreGamelleName2.setFont(libelles);	// texte "Gamelles"
+		txtScoreGamelleName2.setFont(libelles); // texte "Gamelles"
 		txtScoreGamelleName2.setBackground(null);
-		txtScoreOutName2.setFont(libelles);		// texte "Sorties"
+		txtScoreOutName2.setFont(libelles); // texte "Sorties"
 		txtScoreOutName2.setBackground(null);
-		txtScorej2.setFont(scores);				// texte "Joueur 2"
+		txtScorej2.setFont(scores); // texte "Joueur 2"
 		txtScorej2.setBackground(null);
-		txtScore2.setFont(scores);				// score J2
+		txtScore2.setFont(scores); // score J2
 		txtScore2.setBackground(null);
-		txtScore2Goal.setFont(scores);			// nb de buts
+		txtScore2Goal.setFont(scores); // nb de buts
 		txtScore2Goal.setBackground(null);
-		txtScore2Gamelle.setFont(scores);		// nb de gamelles
+		txtScore2Gamelle.setFont(scores); // nb de gamelles
 		txtScore2Gamelle.setBackground(null);
-		txtScore2Out.setFont(scores);			// nb de sorties
+		txtScore2Out.setFont(scores); // nb de sorties
 		txtScore2Out.setBackground(null);
-		tChemin.setFont(libelles);				// Titre de la video
+		tChemin.setFont(libelles); // Titre de la video
 		tChemin.setBackground(null);
-		
-		
-		
-		
+
 		bValid.addActionListener(listen);
 		bOpen.addActionListener(listen);
 		bSuivant.addActionListener(listen);
@@ -389,7 +396,7 @@ public class Fenetre {
 		Graphics2D g2;
 		Graphics2D g3;
 		Graphics2D g4;
-		
+
 		@Override
 		public void mousePressed(MouseEvent e) {
 			g = pan.getGraphics();
@@ -429,7 +436,7 @@ public class Fenetre {
 				Y[0] = e.getY();
 				c++;
 			}
-			
+
 			if (c == 12) {
 				g2.setColor(new Color(100, 100, 100));
 				g2.setStroke(new BasicStroke(3));
@@ -438,7 +445,7 @@ public class Fenetre {
 				Y[2] = e.getY();
 				c++;
 			}
-			
+
 			if (c == 14) {
 				g3.setColor(new Color(100, 100, 100));
 				g3.setStroke(new BasicStroke(3));
@@ -447,7 +454,7 @@ public class Fenetre {
 				Y[4] = e.getY();
 				c++;
 			}
-			
+
 			if (c == 16) {
 				g4.setColor(new Color(100, 100, 100));
 				g4.setStroke(new BasicStroke(3));
@@ -457,10 +464,9 @@ public class Fenetre {
 				c++;
 			}
 
-		}	// Fin mousePressed
-		
-		public void mouseReleased (MouseEvent e)
-		{
+		} // Fin mousePressed
+
+		public void mouseReleased(MouseEvent e) {
 			if (c == 11) {
 				X[1] = e.getX();
 				Y[1] = e.getY();
@@ -499,15 +505,13 @@ public class Fenetre {
 				g4.drawLine(X[6], Y[6], X[7], Y[7]);
 				g4.dispose();
 				c++;
-				if (segmentation)
-				{
+				if (segmentation) {
 					bScores.setEnabled(true);
 				}
 				bValid.setEnabled(true);
 			}
-			
-		}	// Fin mouseReleased
-		
+
+		} // Fin mouseReleased
 
 		public int getx() {
 			return x;
@@ -528,19 +532,20 @@ public class Fenetre {
 
 	public class Ecouteur implements ActionListener {
 
-		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres, valid, X, Y);
+		PlayPause p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres, valid,
+				X, Y);
 
 		public void actionPerformed(ActionEvent e) {
-	
-			X=clic.getX();
-			Y=clic.getY();
-			
-			if(e.getSource() == bValid) {
-				
-				valid=true;
-				
+
+			X = clic.getX();
+			Y = clic.getY();
+
+			if (e.getSource() == bValid) {
+
+				valid = true;
+
 			}
-			
+
 			if (e.getSource() == bScores) { // ---- Scores ----
 				Events events = new Events(barycentres, video.getSize(), clic.getX(), clic.getY());
 				events.detection(); // Calcul des scores
@@ -556,26 +561,25 @@ public class Fenetre {
 				// ---- Scores totaux ----
 				int gamJ1;
 				int gamJ2;
-				switch (regle)
-				{
-				case 1: 	// regle +1
-					gamJ1=events.getPlayer1().getNbGamelle();
-					gamJ2=events.getPlayer2().getNbGamelle();
+				switch (regle) {
+				case 1: // regle +1
+					gamJ1 = events.getPlayer1().getNbGamelle();
+					gamJ2 = events.getPlayer2().getNbGamelle();
 					break;
-				case 2:		// regle -1
-					gamJ1=-(events.getPlayer2().getNbGamelle());
-					gamJ2=-(events.getPlayer1().getNbGamelle());
+				case 2: // regle -1
+					gamJ1 = -(events.getPlayer2().getNbGamelle());
+					gamJ2 = -(events.getPlayer1().getNbGamelle());
 					break;
-				default:	// regle +1/-1 (regle=0 ou regle par défaut)
-					gamJ1=-(events.getPlayer2().getNbGamelle())+events.getPlayer1().getNbGamelle();
-					gamJ2=-(events.getPlayer1().getNbGamelle())+events.getPlayer2().getNbGamelle();
-					
+				default: // regle +1/-1 (regle=0 ou regle par défaut)
+					gamJ1 = -(events.getPlayer2().getNbGamelle()) + events.getPlayer1().getNbGamelle();
+					gamJ2 = -(events.getPlayer1().getNbGamelle()) + events.getPlayer2().getNbGamelle();
+
 				}
-				int scoreJ1=events.getPlayer1().getNbGoal()+gamJ1;
-				int scoreJ2=events.getPlayer2().getNbGoal()+gamJ2;
-				
-				txtScore1.setText(""+scoreJ1);
-				txtScore2.setText(""+scoreJ2);
+				int scoreJ1 = events.getPlayer1().getNbGoal() + gamJ1;
+				int scoreJ2 = events.getPlayer2().getNbGoal() + gamJ2;
+
+				txtScore1.setText("" + scoreJ1);
+				txtScore2.setText("" + scoreJ2);
 
 				bSauvegarder.setEnabled(true);
 			}
@@ -591,16 +595,16 @@ public class Fenetre {
 			}
 			if (e.getSource() == bSauvegarder) {
 				int nbimg = video.getSize();
-				String nomVid=	tChemin.getText();
-				nomVid= nomVid.substring(nomVid.lastIndexOf("/"));
-				nomVid=nomVid.substring(2, nomVid.lastIndexOf("."));
+				String nomVid = tChemin.getText();
+				nomVid = nomVid.substring(nomVid.lastIndexOf("/"));
+				nomVid = nomVid.substring(2, nomVid.lastIndexOf("."));
 				System.out.println(nomVid);
 				Events e1 = new Events(barycentres, nbimg, clic.getX(), clic.getY());
 				e1.detection();
 				Player p1 = e1.getPlayer1();
 				Player p2 = e1.getPlayer2();
-				Sauvegarde.write(p1, p2, regle, nomVid,e1);
-				
+				Sauvegarde.write(p1, p2, regle, nomVid, e1);
+
 			}
 			if (e.getSource() == bSelectCentre) {
 				c = 0;
@@ -635,7 +639,9 @@ public class Fenetre {
 					JFileChooser ch = new FenetreOuvrir();
 					String str = ch.getSelectedFile().getAbsolutePath();
 					// System.out.println(str);
-					String replacedStr = str.replace('\\', '/'); // Pour avoir un chemin exploitable
+					String replacedStr = str.replace('\\', '/'); // Pour avoir
+																	// un chemin
+																	// exploitable
 					String strNomVideo = ch.getSelectedFile().getName();
 					// System.out.println(replacedStr);
 					// reinitialisation des scores
@@ -649,7 +655,7 @@ public class Fenetre {
 					txtScore2Gamelle.setText("0");
 					txtScore2Out.setText("0");
 					txtScore2.setText("0");
-					
+
 					afficherImage(replacedStr);
 					int nbimg = video.getSize();
 					int nbAffiche = numImg + 1;
@@ -663,13 +669,13 @@ public class Fenetre {
 					bSelectCentre.setEnabled(true);
 					bSelectSGa.setEnabled(true);
 					bScores.setEnabled(false);
-					bSauvegarder.setEnabled(false);				
+					bSauvegarder.setEnabled(false);
 					bSelectBGa.setEnabled(false);
 					bSelectBDr.setEnabled(false);
 					bSelectSDr.setEnabled(false);
 					bValid.setEnabled(false);
-					valid=false;
-					
+					valid = false;
+
 					frame.validate();
 					segmentation = false;
 					barSeg.setMaximum(nbimg);
@@ -682,55 +688,54 @@ public class Fenetre {
 				}
 			}
 			if (e.getSource() == bPrecedent) {
-			
+
 				int nbimg = video.getSize();
 				if (numImg > 0) {
 					numImg--;
 					Mat frame2 = video.getFrame(numImg);
-					
+
 					if (valid == true) {
-						int x0=X[0];
+						int x0 = X[0];
 						int y0 = Y[0];
 						Point P0 = new Point(x0, y0);
-						
+
 						int x1 = X[1];
 						int y1 = Y[1];
 						Point P1 = new Point(x1, y1);
-						
-						int x2=X[2];
-						int y2= Y[2];
+
+						int x2 = X[2];
+						int y2 = Y[2];
 						Point P2 = new Point(x2, y2);
-						
+
 						int x3 = X[3];
 						int y3 = Y[3];
 						Point P3 = new Point(x3, y3);
-						
-						int x4=X[4];
+
+						int x4 = X[4];
 						int y4 = Y[4];
 						Point P4 = new Point(x4, y4);
-						
+
 						int x5 = X[5];
 						int y5 = Y[5];
 						Point P5 = new Point(x5, y5);
-						
-						int x6=X[6];
+
+						int x6 = X[6];
 						int y6 = Y[6];
 						Point P6 = new Point(x6, y6);
-						
+
 						int x7 = X[7];
 						int y7 = Y[7];
 						Point P7 = new Point(x7, y7);
-						
+
 						Scalar color = new Scalar(0, 0, 255);
 						Scalar color2 = new Scalar(0, 255, 0);
 						// Tracer une ligne rouge
-						
-						Core.line(frame2, P0, P1, color,3);
-						Core.line(frame2, P2, P3, color2,3);
-						Core.line(frame2, P4, P5, color2,3);
-						Core.line(frame2, P6, P7, color,3);
 
-						
+						Core.line(frame2, P0, P1, color, 3);
+						Core.line(frame2, P2, P3, color2, 3);
+						Core.line(frame2, P4, P5, color2, 3);
+						Core.line(frame2, P6, P7, color, 3);
+
 					}
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
@@ -740,19 +745,21 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
 					}
-					
-					
+
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 					lImage.setIcon(image);
 					panelImage.add(lImage);
 					panelImage.repaint();
 					int nbAffiche = numImg + 1;
 					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-					
+
 					frame.validate();
-			
+
 				}
 			}
 			if (e.getSource() == bSuivant) {
@@ -761,50 +768,49 @@ public class Fenetre {
 					numImg++;
 					Mat frame2 = new Mat();
 					frame2 = video.getFrame(numImg);
-					
+
 					if (valid == true) {
-						int x0=X[0];
+						int x0 = X[0];
 						int y0 = Y[0];
 						Point P0 = new Point(x0, y0);
-						
+
 						int x1 = X[1];
 						int y1 = Y[1];
 						Point P1 = new Point(x1, y1);
-						
-						int x2=X[2];
-						int y2= Y[2];
+
+						int x2 = X[2];
+						int y2 = Y[2];
 						Point P2 = new Point(x2, y2);
-						
+
 						int x3 = X[3];
 						int y3 = Y[3];
 						Point P3 = new Point(x3, y3);
-						
-						int x4=X[4];
+
+						int x4 = X[4];
 						int y4 = Y[4];
 						Point P4 = new Point(x4, y4);
-						
+
 						int x5 = X[5];
 						int y5 = Y[5];
 						Point P5 = new Point(x5, y5);
-						
-						int x6=X[6];
+
+						int x6 = X[6];
 						int y6 = Y[6];
 						Point P6 = new Point(x6, y6);
-						
+
 						int x7 = X[7];
 						int y7 = Y[7];
 						Point P7 = new Point(x7, y7);
-						
+
 						Scalar color = new Scalar(0, 0, 255);
 						Scalar color2 = new Scalar(0, 255, 0);
 						// Tracer une ligne rouge
-						
-						Core.line(frame2, P0, P1, color,3);
-						Core.line(frame2, P2, P3, color2,3);
-						Core.line(frame2, P4, P5, color2,3);
-						Core.line(frame2, P6, P7, color,3);
 
-						
+						Core.line(frame2, P0, P1, color, 3);
+						Core.line(frame2, P2, P3, color2, 3);
+						Core.line(frame2, P4, P5, color2, 3);
+						Core.line(frame2, P6, P7, color, 3);
+
 					}
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
@@ -814,26 +820,28 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
 					}
-				
-					
-					
+
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 					lImage.setIcon(image);
 					panelImage.add(lImage);
 					panelImage.repaint();
 					int nbAffiche = numImg + 1;
 					txtNum.setText("N°" + nbAffiche + "/" + nbimg);
-					
-					frame.validate();	
-					
-				}	
+
+					frame.validate();
+
+				}
 			}
 
 			if (e.getSource() == bPlay) {
 				if (!p.isAlive()) {
-					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres, valid, X, Y);
+					p = new PlayPause(numImg, video, frame, panelImage, lImage, txtNum, segmentation, barycentres,
+							valid, X, Y);
 					// System.out.println("play: "+numImg);
 					p.start();
 
@@ -867,48 +875,47 @@ public class Fenetre {
 					numImg = numEntre - 1;
 					Mat frame2 = video.getFrame(numImg);
 					if (valid == true) {
-						int x0=X[0];
+						int x0 = X[0];
 						int y0 = Y[0];
 						Point P0 = new Point(x0, y0);
-						
+
 						int x1 = X[1];
 						int y1 = Y[1];
 						Point P1 = new Point(x1, y1);
-						
-						int x2=X[2];
-						int y2= Y[2];
+
+						int x2 = X[2];
+						int y2 = Y[2];
 						Point P2 = new Point(x2, y2);
-						
+
 						int x3 = X[3];
 						int y3 = Y[3];
 						Point P3 = new Point(x3, y3);
-						
-						int x4=X[4];
+
+						int x4 = X[4];
 						int y4 = Y[4];
 						Point P4 = new Point(x4, y4);
-						
+
 						int x5 = X[5];
 						int y5 = Y[5];
 						Point P5 = new Point(x5, y5);
-						
-						int x6=X[6];
+
+						int x6 = X[6];
 						int y6 = Y[6];
 						Point P6 = new Point(x6, y6);
-						
+
 						int x7 = X[7];
 						int y7 = Y[7];
 						Point P7 = new Point(x7, y7);
-						
+
 						Scalar color = new Scalar(0, 0, 255);
 						Scalar color2 = new Scalar(0, 255, 0);
 						// Tracer une ligne rouge
-						
-						Core.line(frame2, P0, P1, color,3);
-						Core.line(frame2, P2, P3, color2,3);
-						Core.line(frame2, P4, P5, color2,3);
-						Core.line(frame2, P6, P7, color,3);
 
-						
+						Core.line(frame2, P0, P1, color, 3);
+						Core.line(frame2, P2, P3, color2, 3);
+						Core.line(frame2, P4, P5, color2, 3);
+						Core.line(frame2, P6, P7, color, 3);
+
 					}
 					if (segmentation == true) {
 						int x = barycentres[0][numImg];
@@ -918,7 +925,10 @@ public class Fenetre {
 						Scalar color = new Scalar(0, 0, 255);
 						// Tracer un cercle rouge représentant le barycentre
 
-						Core.circle(frame2, centre, rayon, color, -1); // -1: rempli le cercle
+						Core.circle(frame2, centre, rayon, color, -1); // -1:
+																		// rempli
+																		// le
+																		// cercle
 					}
 					ImageIcon image = new ImageIcon(Mat2bufferedImage(frame2, video.getWidth(), video.getHeight()));
 
@@ -938,7 +948,6 @@ public class Fenetre {
 			if (e.getSource() == bCommencer) {
 				numImg = 0;
 				System.out.println("Début segmentation");
-				Segmentation test;
 				Mat img;
 				HSV hsv;
 				int h, s, v;
@@ -959,49 +968,86 @@ public class Fenetre {
 
 					int nbImg = video.getSize();
 
-					int X[] = new int[nbImg];
-					int Y[] = new int[nbImg];
+					int[] XS = new int[nbImg];
+					int[] YS = new int[nbImg];
 
-					video.startSeg(); // Début de la segmentation
+					XS1 = new int[nbImg];
+					YS1 = new int[nbImg];
+					XS2 = new int[nbImg];
+					YS2 = new int[nbImg];
+					XS3 = new int[nbImg];
+					YS3 = new int[nbImg];
+					XS4 = new int[nbImg];
+					YS4 = new int[nbImg];
+//					XS5 = new int[nbImg];
+//					YS5 = new int[nbImg];
+//					XS6 = new int[nbImg];
+//					YS6 = new int[nbImg];
+//					XS7 = new int[nbImg];
+//					YS7 = new int[nbImg];
+//					XS8 = new int[nbImg];
+//					YS8 = new int[nbImg];
+
+					nbFrameSeg.set(0);
+
 					double tpsSys = System.currentTimeMillis();
-					for (int i = 0; i < nbImg; i++) {
 
-						System.out.println("Segmentation de l'image " + (i + 1) + "/" + nbImg);
-						
-						test = new Segmentation(video.getFrameForSeg(i), h, s, v);
-						if (test.getY_()>10 && test.getY_()<video.getHeight()-10){
-							X[i] = test.getX_();
-							Y[i] = test.getY_();
-							Point centre = new Point(X[i], Y[i]);
-							int rayon = 10;
-							Scalar color = new Scalar(0, 0, 255);
-							// Tracer un cercle rouge représentant le barycentre
-							
+					LoadVideo videoThread1 = new LoadVideo(cheminVideo);
+					LoadVideo videoThread2 = new LoadVideo(cheminVideo);
+					LoadVideo videoThread3 = new LoadVideo(cheminVideo);
+					LoadVideo videoThread4 = new LoadVideo(cheminVideo);
+//					LoadVideo videoThread5 = new LoadVideo(cheminVideo);
+//					LoadVideo videoThread6 = new LoadVideo(cheminVideo);
+//					LoadVideo videoThread7 = new LoadVideo(cheminVideo);
+//					LoadVideo videoThread8 = new LoadVideo(cheminVideo);
 
-							//Core.circle(video.getFrame(i), centre, rayon, color, -1); // -1: rempli le cercle
-						
-						} else
-						{
-							X[i]=-10;
-							Y[i]=-10;
+					int num2Frame = Math.round(nbImg / 2);
+					int num1Frame = Math.round(num2Frame / 2);
+					int num3Frame = num2Frame + num1Frame;
+					
+//					int num4Frame = Math.round(nbImg / 2);
+//					int num2Frame = Math.round(num4Frame / 2);
+//					int num1Frame = Math.round(num2Frame / 2);
+//					int num3Frame = num2Frame + num1Frame;
+//					int num5Frame = num4Frame + num1Frame;
+//					int num6Frame = num5Frame + num1Frame;
+//					int num7Frame = num6Frame + num1Frame;
+
+					segThread1 = new SegmentationThread(videoThread1, 0, num1Frame, h, s, v, XS1, YS1);
+					segThread2 = new SegmentationThread(videoThread2, num1Frame, num2Frame, h, s, v, XS2, YS2);
+					segThread3 = new SegmentationThread(videoThread3, num2Frame, num3Frame, h, s, v, XS3, YS3);
+					segThread4 = new SegmentationThread(videoThread4, num3Frame, nbImg, h, s, v, XS4, YS4);
+//					segThread5 = new SegmentationThread(videoThread5, num4Frame, num5Frame, h, s, v, XS5, YS5);
+//					segThread6 = new SegmentationThread(videoThread6, num5Frame, num6Frame, h, s, v, XS6, YS6);
+//					segThread7 = new SegmentationThread(videoThread7, num6Frame, num7Frame, h, s, v, XS7, YS7);
+//					segThread8 = new SegmentationThread(videoThread8, num7Frame, nbImg, h, s, v, XS8, YS8);
+
+					segThread1.start();
+					segThread2.start();
+					segThread3.start();
+					segThread4.start();
+//					segThread5.start();
+//					segThread6.start();
+//					segThread7.start();
+//					segThread8.start();
+
+					int nbFrameSeg2 = 0;
+					while (nbFrameSeg2 < nbImg) {
+						nbFrameSeg2 = nbFrameSeg.get();
+						System.out.println("Segmentation de l'image " + nbFrameSeg2 + "/" + nbImg);
+						try {
+							Thread.sleep(250);
+						} catch (InterruptedException e1) {
 						}
-						
-						barSeg.setValue(i);
-						frame.validate();
-
-						// if (test.getX_()>video.getWidth()*0.4 &&
-						// test.getX_()<video.getWidth()*0.6)
-						// {
-						// i++; // Si la balle se trouve au milieu de l'image,
-						// on saute 1 image sur 2 (zone non interessante)
-						// }
-						
-						
 					}
 
-					video.endSeg(); // Fin de la segmentation
-					barycentres[0] = X;
-					barycentres[1] = Y;
+					for (int i = 0; i < nbImg; i++) {
+						XS[i] = XS1[i] + XS2[i] + XS3[i] + XS4[i] /*+ XS5[i] + XS6[i] + XS7[i] + XS8[i]*/;
+						YS[i] = YS1[i] + YS2[i] + YS3[i] + YS4[i] /*+ YS5[i] + YS6[i] + YS7[i] + YS8[i]*/;
+					}
+
+					barycentres[0] = XS;
+					barycentres[1] = YS;
 					tpsSys = System.currentTimeMillis() - tpsSys;
 					System.out.println("Temps utilisé pour réaliser la segmentation : " + tpsSys + " ms");
 					videoSeg = true;
@@ -1016,8 +1062,7 @@ public class Fenetre {
 
 					bCommencer.setEnabled(false);
 					bSelectCentre.setEnabled(false);
-					if (valid)
-					{
+					if (valid) {
 						bScores.setEnabled(true);
 					}
 
@@ -1033,12 +1078,60 @@ public class Fenetre {
 
 		}
 
+		// ---- SegmentationThread ----
+
+		AtomicInteger nbFrameSeg = new AtomicInteger(0);
+		int XS1[], XS2[], XS3[], XS4[]/*, XS5[], XS6[], XS7[], XS8[]*/;
+		int YS1[], YS2[], YS3[], YS4[]/*, YS5[], YS6[], YS7[], YS8[]*/;
+		SegmentationThread segThread1, segThread2, segThread3, segThread4, segThread5, segThread6, segThread7,
+				segThread8;
+		String cheminVideo;
+
+		public class SegmentationThread extends Thread {
+			LoadVideo videoThread;
+			int numFrameStart = 0;
+			int numFrameStop = 0;
+			int h, s, v;
+			int XS[], YS[];
+
+			public SegmentationThread(LoadVideo videoThread, int numFrameStart, int numFrameStop, int h, int s, int v,
+					int[] XS, int[] YS) {
+				super();
+				this.videoThread = videoThread;
+				this.numFrameStart = numFrameStart;
+				this.numFrameStop = numFrameStop;
+				this.h = h;
+				this.s = s;
+				this.v = v;
+				this.XS = XS;
+				this.YS = YS;
+			}
+
+			public void run() {
+				Segmentation seg;
+				videoThread.startSeg(numFrameStart); // Début de la segmentation
+				for (int i = numFrameStart; i < numFrameStop; i++) {
+					seg = new Segmentation(videoThread.getFrameForSeg(), h, s, v);
+					if (seg.getY_() > 10 && seg.getY_() < video.getHeight() - 10) {
+						XS[i] = seg.getX_();
+						YS[i] = seg.getY_();
+					} else {
+						XS[i] = -10;
+						YS[i] = -10;
+					}
+					nbFrameSeg.incrementAndGet();
+				}
+				videoThread.endSeg();
+
+			}
+		}
+
 		public void afficherImage(String chemin) {
 
 			numImg = 0;
 
-			if (lImage.getMaximumSize().getHeight() > 0 && lImage.getMaximumSize().getWidth() > 0) 
-				// Si on a déjà ouvert une video auparavant
+			if (lImage.getMaximumSize().getHeight() > 0 && lImage.getMaximumSize().getWidth() > 0)
+			// Si on a déjà ouvert une video auparavant
 			{
 				// video.libererVideo(); // on libère la mémoire
 				lImage.removeAll();
@@ -1050,6 +1143,7 @@ public class Fenetre {
 			if (cap.isOpened()) {
 				System.out.println("Success to open file");
 				video = new LoadVideo(chemin);
+				cheminVideo = chemin;
 				ImageIcon image = new ImageIcon(
 						Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
 				// Image img =Mat2bufferedImage(video.getFrame(numImg),

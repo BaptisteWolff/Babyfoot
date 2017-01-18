@@ -146,31 +146,28 @@ public class LoadVideo {
 	}
 
 	public Mat getFrame(int numFrame) {
-		
+
 		int diff = numFrame - nLastFrame;
 
 		if (diff == 0) {
 			return currentFrame;
 		}
 
-		if (numFrame <= nLastFrameRec && numFrame >= nLastFrameRec - frames.size()) { // Frame
-			// already
-			// saved
-			// in
-			// frames
+		if (numFrame <= nLastFrameRec && numFrame >= nLastFrameRec - frames.size()) {
+			// Frame already saved in frames
 			currentFrame = frames.get(numFrame - (nLastFrameRec - frames.size()));
 			return currentFrame;
 		}
 
 		if (diff == 1) { // play video
-
-			Mat frame = new Mat();
-			currentFrame.copyTo(frame);
-			frames.add(frame);
-			if (numFrame > 49) {
-				frames.remove(0);
+			if (nLastFrameRec + 1 == numFrame) {
+				Mat frame = new Mat();
+				currentFrame.copyTo(frame);
+				frames.add(frame);
+				if (numFrame > 49) {
+					frames.remove(0);
+				}
 			}
-
 			cap.read(currentFrame);
 
 		}
@@ -213,11 +210,14 @@ public class LoadVideo {
 		return currentFrame;
 	}
 
-	public void startSeg() {
+	public void startSeg(int nbStartFrame) {
 		cap = new VideoCapture(videoName);
+		for (int i = 0; i < nbStartFrame; i++) {
+			cap.grab();
+		}
 	}
 
-	public Mat getFrameForSeg(int numFrame) {
+	public Mat getFrameForSeg() {
 		cap.read(currentFrame);
 		return (currentFrame);
 	}
