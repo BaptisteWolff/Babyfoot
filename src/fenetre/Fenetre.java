@@ -596,7 +596,6 @@ public class Fenetre {
 			if (e.getSource() == bSauvegarder) {
 				int nbimg = video.getSize();
 				String nomVid = tChemin.getText();
-				nomVid = nomVid.substring(nomVid.lastIndexOf("/"));
 				nomVid = nomVid.substring(2, nomVid.lastIndexOf("."));
 				System.out.println(nomVid);
 				Events e1 = new Events(barycentres, nbimg, clic.getX(), clic.getY());
