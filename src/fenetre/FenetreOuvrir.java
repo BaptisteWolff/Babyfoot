@@ -13,7 +13,13 @@ import javax.swing.JFrame;
 public class FenetreOuvrir extends JFileChooser {
 	public FenetreOuvrir(){
 		String fileName;
-		
+		String slash = System.getProperty("file.separator");
+		// On change le répertoire par défaut
+		try{
+			this.setCurrentDirectory(new File (System.getProperty("user.home") + slash + "Documents" 
+												+ slash + "Big Macadam" + slash + "videos"));
+		} catch (Exception e)
+		{}
 	    int status = this.showOpenDialog(null);
 	    if (status == JFileChooser.APPROVE_OPTION) {
 	       File file = this.getSelectedFile();
