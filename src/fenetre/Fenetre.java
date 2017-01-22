@@ -296,15 +296,28 @@ public class Fenetre {
 		bSauvegarder.setEnabled(false);
 		bScores.setEnabled(false);
 		bValid.setEnabled(false);
+		
+		Color colorJ1 = new Color(20, 100, 180);
+		Color colorJ2 = new Color(150, 20, 180);
 		// ---- Joueur 1 ----
-		txtScoreGoalName1.setEditable(false); // texte "Buts"
-		txtScoreGamelleName1.setEditable(false); // texte "Gamelles"
-		txtScoreOutName1.setEditable(false); // texte "Sorties"
-		txtScorej1.setEditable(false); // texte "Joueur 1"
-		txtScore1.setEditable(false); // score J1
-		txtScore1Goal.setEditable(false); // nb de buts
-		txtScore1Gamelle.setEditable(false); // nb de gamelles
-		txtScore1Out.setEditable(false); // nb de sorties
+		txtScoreGoalName1.setEditable(false); 		// texte "Buts"
+		txtScoreGamelleName1.setEditable(false);	// texte "Gamelles"
+		txtScoreOutName1.setEditable(false); 		// texte "Sorties"
+		txtScorej1.setEditable(false); 				// texte "Joueur 1"
+		txtScore1.setEditable(false); 				// score J1
+		txtScore1Goal.setEditable(false);			// nb de buts
+		txtScore1Gamelle.setEditable(false); 		// nb de gamelles
+		txtScore1Out.setEditable(false); 			// nb de sorties
+		
+		txtScoreGoalName1.setForeground(colorJ1);
+		txtScoreGamelleName1.setForeground(colorJ1);
+		txtScoreOutName1.setForeground(colorJ1);  
+		txtScorej1.setForeground(colorJ1);
+		txtScore1.setForeground(colorJ1);
+		txtScore1Goal.setForeground(colorJ1);
+		txtScore1Gamelle.setForeground(colorJ1); 
+		txtScore1Out.setForeground(colorJ1); 
+		
 		// ---- Joueur 2 ----
 		txtScoreGoalName2.setEditable(false);
 		txtScoreGamelleName2.setEditable(false);
@@ -314,10 +327,21 @@ public class Fenetre {
 		txtScore2Goal.setEditable(false);
 		txtScore2Gamelle.setEditable(false);
 		txtScore2Out.setEditable(false);
+		txtScorej2.setForeground(colorJ2);
+		
+		txtScoreGoalName2.setForeground(colorJ2);
+		txtScoreGamelleName2.setForeground(colorJ2);
+		txtScoreOutName2.setForeground(colorJ2);  
+		txtScorej2.setForeground(colorJ2);
+		txtScore2.setForeground(colorJ2);
+		txtScore2Goal.setForeground(colorJ2);
+		txtScore2Gamelle.setForeground(colorJ2); 
+		txtScore2Out.setForeground(colorJ2); 
 
 		// Affiche les scores en gras
 		Font libelles = new Font("Arial", Font.ROMAN_BASELINE, 14);
 		Font scores = new Font("Arial", Font.BOLD, 16);
+		
 
 		txtScoreGoalName1.setFont(libelles); // texte "Buts"
 		txtScoreGoalName1.setBackground(null);
@@ -430,7 +454,7 @@ public class Fenetre {
 			if (c == 10) {
 
 				g1.setColor(new Color(100, 100, 100));
-				g1.setStroke(new BasicStroke(3));
+				g1.setStroke(new BasicStroke(4));
 				g1.drawLine(X[0], Y[0], X[1], Y[1]);
 				X[0] = e.getX();
 				Y[0] = e.getY();
@@ -439,7 +463,7 @@ public class Fenetre {
 
 			if (c == 12) {
 				g2.setColor(new Color(100, 100, 100));
-				g2.setStroke(new BasicStroke(3));
+				g2.setStroke(new BasicStroke(4));
 				g2.drawLine(X[2], Y[2], X[3], Y[3]);
 				X[2] = e.getX();
 				Y[2] = e.getY();
@@ -448,7 +472,7 @@ public class Fenetre {
 
 			if (c == 14) {
 				g3.setColor(new Color(100, 100, 100));
-				g3.setStroke(new BasicStroke(3));
+				g3.setStroke(new BasicStroke(4));
 				g3.drawLine(X[4], Y[4], X[5], Y[5]);
 				X[4] = e.getX();
 				Y[4] = e.getY();
@@ -457,7 +481,7 @@ public class Fenetre {
 
 			if (c == 16) {
 				g4.setColor(new Color(100, 100, 100));
-				g4.setStroke(new BasicStroke(3));
+				g4.setStroke(new BasicStroke(4));
 				g4.drawLine(X[6], Y[6], X[7], Y[7]);
 				X[6] = e.getX();
 				Y[6] = e.getY();
@@ -471,7 +495,7 @@ public class Fenetre {
 				X[1] = e.getX();
 				Y[1] = e.getY();
 				g1.setColor(Color.red);
-				g1.setStroke(new BasicStroke(3));
+				g1.setStroke(new BasicStroke(4));
 				g1.drawLine(X[0], Y[0], X[1], Y[1]);
 				g1.dispose();
 				c++;
@@ -481,7 +505,7 @@ public class Fenetre {
 				X[3] = e.getX();
 				Y[3] = e.getY();
 				g2.setColor(Color.green);
-				g2.setStroke(new BasicStroke(3));
+				g2.setStroke(new BasicStroke(4));
 				g2.drawLine(X[2], Y[2], X[3], Y[3]);
 				g2.dispose();
 				c++;
@@ -491,7 +515,7 @@ public class Fenetre {
 				X[5] = e.getX();
 				Y[5] = e.getY();
 				g3.setColor(Color.green);
-				g3.setStroke(new BasicStroke(3));
+				g3.setStroke(new BasicStroke(4));
 				g3.drawLine(X[4], Y[4], X[5], Y[5]);
 				g3.dispose();
 				c++;
@@ -501,7 +525,7 @@ public class Fenetre {
 				X[7] = e.getX();
 				Y[7] = e.getY();
 				g4.setColor(Color.red);
-				g4.setStroke(new BasicStroke(3));
+				g4.setStroke(new BasicStroke(4));
 				g4.drawLine(X[6], Y[6], X[7], Y[7]);
 				g4.dispose();
 				c++;
