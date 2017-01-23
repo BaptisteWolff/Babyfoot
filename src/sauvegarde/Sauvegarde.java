@@ -52,6 +52,8 @@ public class Sauvegarde {
 		System.out.println("score2 "+score2);
 
 		try {
+			int indexStr=nomVid.lastIndexOf(".");
+			nomVid=nomVid.substring(0,indexStr);
 			String str=nomVid.concat(".yml");
 			System.out.println(str);
 			BufferedWriter fichier = new BufferedWriter(new FileWriter(str));
