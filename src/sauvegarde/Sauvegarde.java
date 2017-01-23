@@ -1,19 +1,7 @@
 package sauvegarde;
-import java.io.File;
-//import org.ho.yaml.Yaml;
-
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import events.Events;
 import events.Player;
@@ -26,12 +14,6 @@ public class Sauvegarde {
 		int score1=0;
 		int score2=0;
 		ArrayList <String> listeEvent = e1.getlisteEvent();
-		ArrayList <Integer> gam1=j1.getGamelle();
-		ArrayList <Integer> gam2=j2.getGamelle();
-		ArrayList <Integer> goal1=j1.getGoal();
-		ArrayList <Integer> goal2=j2.getGoal();
-		ArrayList <Integer> out1=j1.getOut();
-		ArrayList <Integer> out2=j2.getOut();
 		int nbGam1=j1.getNbGamelle();
 		int nbGam2=j2.getNbGamelle();
 		int nbGoal1=j1.getNbGoal();
@@ -43,8 +25,7 @@ public class Sauvegarde {
 		switch (regle)
 		{
 		case 1: 	// regle +1
-			nbGam1=nbGam1;
-			nbGam2=nbGam2;
+			// nbGam1 et 2 restent les mêmes
 			break;
 		case 2:		// regle -1
 			nbGam1=-nbGam2;
@@ -69,7 +50,6 @@ public class Sauvegarde {
 		System.out.println("score2 "+score2);
 
 		try {
-			ArrayList <String> te=new ArrayList<String>();
 			String str=nomVid.concat(".yml");
 			System.out.println(str);
 			BufferedWriter fichier = new BufferedWriter(new FileWriter(str));
@@ -82,7 +62,7 @@ public class Sauvegarde {
 
 		
 			fichier.newLine();
-			fichier.write("    Gamelle: "+ (nbGam1));
+			fichier.write("    Gamelle: "+ (j1.getNbGamelle()));
 		
 			fichier.newLine();
 			fichier.write("    Sortie: "+(nbOut1));
@@ -94,7 +74,7 @@ public class Sauvegarde {
 			fichier.write("    But: "+(nbGoal2));
 			
 			fichier.newLine();
-			fichier.write("    Gamelle: "+ (nbGam2));
+			fichier.write("    Gamelle: "+ (j2.getNbGamelle()));
 			
 			fichier.newLine();
 			fichier.write("    Sortie: "+(nbOut2));

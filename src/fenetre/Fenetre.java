@@ -567,6 +567,10 @@ public class Fenetre {
 			if (e.getSource() == bValid) {
 
 				valid = true;
+				bSelectSGa.setEnabled(false);
+				bSelectBGa.setEnabled(false);
+				bSelectBDr.setEnabled(false);
+				bSelectSDr.setEnabled(false);
 
 			}
 
@@ -620,7 +624,6 @@ public class Fenetre {
 			if (e.getSource() == bSauvegarder) {
 				int nbimg = video.getSize();
 				String nomVid = tChemin.getText();
-				nomVid = nomVid.substring(2, nomVid.lastIndexOf("."));
 				System.out.println(nomVid);
 				Events e1 = new Events(barycentres, nbimg, clic.getX(), clic.getY());
 				e1.detection();
@@ -1002,14 +1005,6 @@ public class Fenetre {
 					YS3 = new int[nbImg];
 					XS4 = new int[nbImg];
 					YS4 = new int[nbImg];
-//					XS5 = new int[nbImg];
-//					YS5 = new int[nbImg];
-//					XS6 = new int[nbImg];
-//					YS6 = new int[nbImg];
-//					XS7 = new int[nbImg];
-//					YS7 = new int[nbImg];
-//					XS8 = new int[nbImg];
-//					YS8 = new int[nbImg];
 
 					nbFrameSeg.set(0);
 
@@ -1019,40 +1014,21 @@ public class Fenetre {
 					LoadVideo videoThread2 = new LoadVideo(cheminVideo);
 					LoadVideo videoThread3 = new LoadVideo(cheminVideo);
 					LoadVideo videoThread4 = new LoadVideo(cheminVideo);
-//					LoadVideo videoThread5 = new LoadVideo(cheminVideo);
-//					LoadVideo videoThread6 = new LoadVideo(cheminVideo);
-//					LoadVideo videoThread7 = new LoadVideo(cheminVideo);
-//					LoadVideo videoThread8 = new LoadVideo(cheminVideo);
 
 					int num2Frame = Math.round(nbImg / 2);
 					int num1Frame = Math.round(num2Frame / 2);
 					int num3Frame = num2Frame + num1Frame;
 					
-//					int num4Frame = Math.round(nbImg / 2);
-//					int num2Frame = Math.round(num4Frame / 2);
-//					int num1Frame = Math.round(num2Frame / 2);
-//					int num3Frame = num2Frame + num1Frame;
-//					int num5Frame = num4Frame + num1Frame;
-//					int num6Frame = num5Frame + num1Frame;
-//					int num7Frame = num6Frame + num1Frame;
 
 					segThread1 = new SegmentationThread(videoThread1, 0, num1Frame, h, s, v, XS1, YS1);
 					segThread2 = new SegmentationThread(videoThread2, num1Frame, num2Frame, h, s, v, XS2, YS2);
 					segThread3 = new SegmentationThread(videoThread3, num2Frame, num3Frame, h, s, v, XS3, YS3);
 					segThread4 = new SegmentationThread(videoThread4, num3Frame, nbImg, h, s, v, XS4, YS4);
-//					segThread5 = new SegmentationThread(videoThread5, num4Frame, num5Frame, h, s, v, XS5, YS5);
-//					segThread6 = new SegmentationThread(videoThread6, num5Frame, num6Frame, h, s, v, XS6, YS6);
-//					segThread7 = new SegmentationThread(videoThread7, num6Frame, num7Frame, h, s, v, XS7, YS7);
-//					segThread8 = new SegmentationThread(videoThread8, num7Frame, nbImg, h, s, v, XS8, YS8);
 
 					segThread1.start();
 					segThread2.start();
 					segThread3.start();
 					segThread4.start();
-//					segThread5.start();
-//					segThread6.start();
-//					segThread7.start();
-//					segThread8.start();
 
 					int nbFrameSeg2 = 0;
 					while (nbFrameSeg2 < nbImg) {
@@ -1065,8 +1041,8 @@ public class Fenetre {
 					}
 
 					for (int i = 0; i < nbImg; i++) {
-						XS[i] = XS1[i] + XS2[i] + XS3[i] + XS4[i] /*+ XS5[i] + XS6[i] + XS7[i] + XS8[i]*/;
-						YS[i] = YS1[i] + YS2[i] + YS3[i] + YS4[i] /*+ YS5[i] + YS6[i] + YS7[i] + YS8[i]*/;
+						XS[i] = XS1[i] + XS2[i] + XS3[i] + XS4[i] ;
+						YS[i] = YS1[i] + YS2[i] + YS3[i] + YS4[i] ;
 					}
 
 					barycentres[0] = XS;
@@ -1104,10 +1080,9 @@ public class Fenetre {
 		// ---- SegmentationThread ----
 
 		AtomicInteger nbFrameSeg = new AtomicInteger(0);
-		int XS1[], XS2[], XS3[], XS4[]/*, XS5[], XS6[], XS7[], XS8[]*/;
-		int YS1[], YS2[], YS3[], YS4[]/*, YS5[], YS6[], YS7[], YS8[]*/;
-		SegmentationThread segThread1, segThread2, segThread3, segThread4, segThread5, segThread6, segThread7,
-				segThread8;
+		int XS1[], XS2[], XS3[], XS4[];
+		int YS1[], YS2[], YS3[], YS4[];
+		SegmentationThread segThread1, segThread2, segThread3, segThread4;
 		String cheminVideo;
 
 		public class SegmentationThread extends Thread {
@@ -1156,7 +1131,6 @@ public class Fenetre {
 			if (lImage.getMaximumSize().getHeight() > 0 && lImage.getMaximumSize().getWidth() > 0)
 			// Si on a déjà ouvert une video auparavant
 			{
-				// video.libererVideo(); // on libère la mémoire
 				lImage.removeAll();
 				System.out.println("video deleted");
 			}
@@ -1167,10 +1141,7 @@ public class Fenetre {
 				System.out.println("Success to open file");
 				video = new LoadVideo(chemin);
 				cheminVideo = chemin;
-				ImageIcon image = new ImageIcon(
-						Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
-				// Image img =Mat2bufferedImage(video.getFrame(numImg),
-				// video.getWidth(), video.getHeight());
+				ImageIcon image = new ImageIcon(Mat2bufferedImage(video.getFrame(numImg), video.getWidth(), video.getHeight()));
 				lImage.setIcon(image);
 				panelImage.add(lImage);
 

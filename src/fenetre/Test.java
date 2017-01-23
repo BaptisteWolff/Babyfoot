@@ -1,11 +1,5 @@
 package fenetre;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
 public class Test {
 	public static void main(String[] args) {
 		System.loadLibrary("opencv_java2413");
