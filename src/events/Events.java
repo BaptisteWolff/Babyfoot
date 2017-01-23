@@ -52,7 +52,7 @@ public class Events {
 			int y = Y[nImage];
 
 			// Balle détectée
-			if (x > 0 && y > 160 && y < 640) {
+			if (x > 0 && y > 80 && y < 560) {
 				if (eventOut == false) { // Balle sur le terrain
 					// --------------- Joueur 2 ----------------------
 					int xMoyGoal1=(goalLinesX[2] + goalLinesX[3])/2;

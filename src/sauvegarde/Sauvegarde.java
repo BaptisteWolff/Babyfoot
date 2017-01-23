@@ -20,24 +20,26 @@ public class Sauvegarde {
 		int nbGoal2=j2.getNbGoal();
 		int nbOut1=j1.getNbOut();
 		int nbOut2=j2.getNbOut();
+		int scoreGam1, scoreGam2;
 
 		// on calcul le score
 		switch (regle)
 		{
 		case 1: 	// regle +1
-			// nbGam1 et 2 restent les mêmes
+			scoreGam1 = nbGam1;
+			scoreGam2 = nbGam2;
 			break;
 		case 2:		// regle -1
-			nbGam1=-nbGam2;
-			nbGam2=-nbGam1;
+			scoreGam1=-nbGam2;
+			scoreGam2=-nbGam1;
 			break;
 		default:	// regle +1/-1 (regle=0 ou regle par défaut)
-			nbGam1=nbGam1-nbGam2;
-			nbGam2=nbGam2-nbGam1;
+			scoreGam1 = nbGam1-nbGam2;
+			scoreGam2 = nbGam2-nbGam1;
 
 		}
-		score1=nbGoal1+nbGam1;
-		score2=nbGoal2+nbGam2;
+		score1=nbGoal1+scoreGam1;
+		score2=nbGoal2+scoreGam2;
 
 
 		System.out.println("nbgam1  "+nbGam1);
